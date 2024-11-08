@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/dmsans_black" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/dmsans_blackitalic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        android:font="@font/dmsans_bold" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="700"
+        android:font="@font/dmsans_bolditalic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="900"
+        android:font="@font/dmsans_extrabold" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="900"
+        android:font="@font/dmsans_extrabolditalic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="100"
+        android:font="@font/dmsans_thin" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="100"
+        android:font="@font/dmsans_thinitalic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="200"
+        android:font="@font/dmsans_light" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="200"
+        android:font="@font/dmsans_lightitalic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="300"
+        android:font="@font/dmsans_medium" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="300"
+        android:font="@font/dmsans_mediumitalic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/dmsans_regular" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="500"
+        android:font="@font/dmsans_semibold" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="500"
+        android:font="@font/dmsans_semibolditalic" />
+</font-family>
