@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -49,7 +53,60 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation ("androidx.core:core-splashscreen:1.0.0")
+
+    //SplashScreen
+    implementation (libs.androidx.core.splashscreen)
+
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation (libs.androidx.material.icons.extended)
+
+    //ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v261)
+
+    //Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    //implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    kapt(libs.androidx.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.fragment)
+    implementation(libs.androidx.hilt.navigation.compose)
+    //androidTestImplementation (libs.hilt.android.testing)
+    //kaptAndroidTest (libs.hilt.android.compiler.v244)
+    //testImplementation (libs.hilt.android.testing)
+    //kaptTest (libs.hilt.android.compiler)
+
+    // Core Hilt dependencies
+    //implementation "com.google.dagger:hilt-android:2.51"
+    //kapt "com.google.dagger:hilt-android-compiler:2.51"
+
+    // Lifecycle components (for ViewModel support)
+    //implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    //implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
+
+    // Optional: Hilt ViewModel extension (if you’re using Hilt for ViewModels)
+    //implementation (libs.androidx.hilt.lifecycle.viewmodel)
+    //kapt (libs.androidx.hilt.compiler.v100)
+
+    // Hilt Navigation Compose support
+    //implementation (libs.androidx.hilt.navigation.compose.v100)
+
+    // Testing dependencies
+    // androidTestImplementation "com.google.dagger:hilt-android-testing:2.51"
+    // kaptAndroidTest "com.google.dagger:hilt-android-compiler:2.51"
+
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    //Authentication with Credential Manager
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
