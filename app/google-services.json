@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "269155939355",
+    "project_id": "mindful-mate-8a4a8",
+    "storage_bucket": "mindful-mate-8a4a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269155939355:android:3c1a5355df6a8a68d2f4be",
+        "android_client_info": {
+          "package_name": "com.example.mindfulmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269155939355-kod37j42ho0d6pm8glfptapchmscmd9r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mindfulmate",
+            "certificate_hash": "a4c175358171f74a281aa81971cc2aeaba472fb0"
+          }
+        },
+        {
+          "client_id": "269155939355-f46b1uc34q8mnaomrbo179jrgus7d9is.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4ymc14xTFbwVLwZ-TtKveM4O0yR8hblQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269155939355-f46b1uc34q8mnaomrbo179jrgus7d9is.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
