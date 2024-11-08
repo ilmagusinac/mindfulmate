@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_default">14dp</dimen>
+    <dimen name="spacing_medium">6dp</dimen>
+    <dimen name="spacing_small">2dp</dimen>
+    <dimen name="spacing_xlarge">36dp</dimen>
+    <dimen name="spacing_xxxlarge">115dp</dimen>
+    <dimen name="spacing_xxxxlarge">173dp</dimen>
+    <dimen name="spacing_xmedium">14dp</dimen>
+    <dimen name="spacing_xxmedium">23dp</dimen>
+    <dimen name="spacing_xxdefault">5dp</dimen>
+    <dimen name="spacing_xdefault">8dp</dimen>
+
+    <!--Padding-->
+    <dimen name="padding_xsmall">4dp</dimen>
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_medium">9dp</dimen>
+    <dimen name="padding_xxlarge">63dp</dimen>
+    <dimen name="padding_xxmedium">18dp</dimen>
+    <dimen name="padding_large">38dp</dimen>
+    <dimen name="padding_xxxmedium">23dp</dimen>
+    <dimen name="padding_mlarge">180dp</dimen>
+    <dimen name="padding_default">8dp</dimen>
+
+    <!--Misc-->
+    <dimen name="border_thin">1dp</dimen>
+    <dimen name="rounded_corners">9dp</dimen>
+    <dimen name="elevation_medium">2dp</dimen>
+    <dimen name="width_mlarge">117dp</dimen>
+</resources>
