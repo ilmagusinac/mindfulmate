@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Mindful Mate</string>
+    <string name="welcome_title">M I N D F U L  M A T E</string>
+    <string name="welcome_sub_title">A Friend for Your Mental Wellness</string>
+    <string name="signup">SIGN UP</string>
+    <string name="signin">SIGN IN</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="toggle_content_description">Toggle password visibility</string>
+    <string name="logo_content_description">Mindful Mate Logo</string>
+    <string name="username">Username</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="password">Password</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="or">OR</string>
+    <string name="google_content_description">Google Icon</string>
+    <string name="signin_with_google">Sign In With Google</string>
+    <string name="signup_with_google">Sign Up With Google</string>
+    <string name="having_problems_signingin">Having Problems Signing In?</string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="surname">Surname</string>
+    <string name="enter_surname">Enter Surname</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="loading_placeholder">Hang on...</string>
+    <string name="error_title">Ups...</string>
+    <string name="error_text">Something went wrong! Let’s try reseting the application.</string>
+    <string name="reset">RESET</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="cancel">CANCEL</string>
 </resources>
