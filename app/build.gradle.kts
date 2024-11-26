@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation (libs.androidx.foundation.layout)
+
     //SplashScreen
     implementation (libs.androidx.core.splashscreen)
 
@@ -67,45 +69,36 @@ dependencies {
 
     //Hilt
     implementation(libs.hilt.android)
+    implementation(libs.firebase.firestore.ktx)
     kapt(libs.hilt.android.compiler)
     //implementation(libs.androidx.hilt.lifecycle.viewmodel)
     kapt(libs.androidx.hilt.compiler)
     implementation (libs.androidx.hilt.navigation.fragment)
     implementation(libs.androidx.hilt.navigation.compose)
-    //androidTestImplementation (libs.hilt.android.testing)
-    //kaptAndroidTest (libs.hilt.android.compiler.v244)
-    //testImplementation (libs.hilt.android.testing)
-    //kaptTest (libs.hilt.android.compiler)
-
-    // Core Hilt dependencies
-    //implementation "com.google.dagger:hilt-android:2.51"
-    //kapt "com.google.dagger:hilt-android-compiler:2.51"
-
-    // Lifecycle components (for ViewModel support)
-    //implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-    //implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
-
-    // Optional: Hilt ViewModel extension (if you’re using Hilt for ViewModels)
-    //implementation (libs.androidx.hilt.lifecycle.viewmodel)
-    //kapt (libs.androidx.hilt.compiler.v100)
-
-    // Hilt Navigation Compose support
-    //implementation (libs.androidx.hilt.navigation.compose.v100)
-
-    // Testing dependencies
-    // androidTestImplementation "com.google.dagger:hilt-android-testing:2.51"
-    // kaptAndroidTest "com.google.dagger:hilt-android-compiler:2.51"
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore")
 
     //Authentication with Credential Manager
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+    //GenerativeAI
+    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
+
+    //Retrofit and OkHttp
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
