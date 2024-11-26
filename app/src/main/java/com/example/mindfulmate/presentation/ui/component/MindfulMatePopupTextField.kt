@@ -45,7 +45,8 @@ fun MindfulMatePopupTextField(
     text: TextFieldValue,
     buttons: List<DialogButtonConfig>,
     onTextValueChange: (TextFieldValue) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    message: String? = null
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -135,6 +136,13 @@ fun MindfulMatePopupTextField(
                         modifier = Modifier.weight(1f)
                     )
                 }
+            }
+            message?.let {
+                Text(
+                    text = it,
+                    color = Blue,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light)
+                )
             }
         }
     }
