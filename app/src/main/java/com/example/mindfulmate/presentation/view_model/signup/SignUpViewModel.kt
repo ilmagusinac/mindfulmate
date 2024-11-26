@@ -32,6 +32,16 @@ class SignUpViewModel @Inject constructor(
     private val _navigationEvent: Channel<SignUpNavigationEvent> = Channel(Channel.CONFLATED)
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
+    private var _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    private val _isSignUpEnabled = MutableStateFlow(false)
+    val isSignUpEnabled: StateFlow<Boolean> = _isSignUpEnabled.asStateFlow()
+
+    fun validateInput(email: String, password: String, confirmPassword: String) {
+        _isSignUpEnabled.value = email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
+    }
+
     fun signUp(email: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
             if (password != confirmPassword) {
@@ -42,8 +52,10 @@ class SignUpViewModel @Inject constructor(
                 userRepository.signUp(email, password)
                 _uiState.update { SignUpUiState.Success(true) }
                 triggerNavigation(SignUpNavigationEvent.Navigate)
+                _errorMessage.value = null
             } catch (e: Exception) {
                 _uiState.update { SignUpUiState.Failure("Sign-up failed: ${e.localizedMessage}") }
+                _errorMessage.value = "Sign-up failed: ${e.localizedMessage}"
             }
         }
     }
