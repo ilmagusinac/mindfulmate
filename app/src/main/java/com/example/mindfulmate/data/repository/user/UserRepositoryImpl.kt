@@ -1,13 +1,15 @@
 package com.example.mindfulmate.data.repository.user
 
 import com.example.mindfulmate.data.service.AccountService
+import com.example.mindfulmate.data.service.UserService
 import com.example.mindfulmate.domain.model.user.User
 import com.example.mindfulmate.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val userService: UserService
 ) : UserRepository {
 
     override val currentUser: Flow<User?> get() = accountService.currentUser
@@ -20,4 +22,8 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun signOut() = accountService.signOut()
     override suspend fun deleteAccount() = accountService.deleteAccount()
     override suspend fun resetPassword(emailAddress: String) = accountService.resetPassword(emailAddress)
+    override suspend fun addUser(user: User) = userService.addUser(user)
+    override suspend fun getUser(): User = userService.getUser()
+    override suspend fun updateUser(user: User) = userService.updateUser(user)
+    override suspend fun deleteUser() = userService.deleteUser()
 }

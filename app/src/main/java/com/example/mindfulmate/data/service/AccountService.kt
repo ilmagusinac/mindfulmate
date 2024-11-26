@@ -15,4 +15,6 @@ interface AccountService {
     suspend fun signInWithGoogle(idToken: String)
     suspend fun linkAccountWithGoogle(idToken: String)
     suspend fun resetPassword(emailAddress: String)
+    suspend fun updateEmail(newEmail: String)
+    suspend fun reauthenticateUser(password: String)
 }
