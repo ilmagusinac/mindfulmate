@@ -4,7 +4,7 @@ import com.example.mindfulmate.data.network.openai.ChatMessage
 
 object OpenAIValues {
     const val BASE_URL = "https://api.openai.com/"
-    const val API_KEY = "Bearer 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"
+    const val API_KEY = ""
     const val MODEL_NAME = "gpt-3.5-turbo"
 }
 
