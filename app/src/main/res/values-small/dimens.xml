@@ -11,11 +11,13 @@
     <dimen name="spacing_xxmedium">23dp</dimen>
     <dimen name="spacing_xxdefault">5dp</dimen>
     <dimen name="spacing_xdefault">8dp</dimen>
+    <dimen name="spacing_xxxmedium">30dp</dimen>
 
     <!--Padding-->
     <dimen name="padding_xsmall">4dp</dimen>
     <dimen name="padding_small">5dp</dimen>
     <dimen name="padding_medium">9dp</dimen>
+    <dimen name="padding_xlarge">35dp</dimen>
     <dimen name="padding_xxlarge">63dp</dimen>
     <dimen name="padding_xxmedium">18dp</dimen>
     <dimen name="padding_large">38dp</dimen>
@@ -25,7 +27,21 @@
 
     <!--Misc-->
     <dimen name="border_thin">1dp</dimen>
+    <dimen name="border_light">0.2dp</dimen>
     <dimen name="rounded_corners">9dp</dimen>
+    <dimen name="rounded_corners_small">4dp</dimen>
     <dimen name="elevation_medium">2dp</dimen>
     <dimen name="width_mlarge">117dp</dimen>
+    <dimen name="height_medium">8dp</dimen>
+    <dimen name="width_medium">5dp</dimen>
+    <dimen name="height_large">115dp</dimen>
+    <dimen name="offset_default">8dp</dimen>
+    <dimen name="blur_medium">25dp</dimen>
+    <dimen name="height_xlarge">162dp</dimen>
+    <dimen name="icon_medium">12dp</dimen>
+    <dimen name="icon_xmedium">9dp</dimen>
+    <dimen name="icon_large">22dp</dimen>
+    <dimen name="icon_small">6dp</dimen>
+    <dimen name="icon_xlarge">27dp</dimen>
+    <dimen name="icon_xxlarge">32dp</dimen>
 </resources>
