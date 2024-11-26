@@ -106,7 +106,7 @@ object MentalHealthKeywords {
         "mental health resources", "helpline", "mental health app",
         "online support", "mental health awareness",
 
-        // Other Common Keywords
+        // Other Common Keywords For Mental Health
         "calmness", "tranquility", "peace", "acceptance",
         "forgiveness", "hope", "therapy session", "mental clarity",
         "focus exercises", "work stress relief", "emotional support",
