@@ -79,7 +79,7 @@
     <string name="existing_one">\nExisting One</string>
     <string name="reset_password_option">If you want to reset password</string>
     <string name="enter_your_email">Enter your Email</string>
-    <string name="credentials_change_title">Change SignIn Credentials</string>
-    <string name="credentials_change_label">Make changes to your email or password</string>
+    <string name="credentials_change_title">Manage Account Credentials</string>
+    <string name="credentials_change_label">Make changes to your credentials</string>
     <string name="edit_credential">Edit Credential</string>
 </resources>
