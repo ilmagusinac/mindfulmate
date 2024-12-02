@@ -8,4 +8,3 @@ sealed interface ChatUiState {
     data class Success(val messages: List<MessageModel>) : ChatUiState
     data class Failure(val errorMessage: String) : ChatUiState
 }
-

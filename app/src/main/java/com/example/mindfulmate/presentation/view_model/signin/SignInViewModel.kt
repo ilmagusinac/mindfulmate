@@ -22,9 +22,8 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel() {
+class SignInViewModel @Inject constructor(private val userRepository: UserRepository) :
+    ViewModel() {
 
     private val _uiState: MutableStateFlow<SignInUiState> = MutableStateFlow(SignInUiState.Init)
     val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
@@ -45,7 +44,10 @@ class SignInViewModel @Inject constructor(
         _isSignInEnabled.value = email.isNotBlank() && password.isNotBlank()
     }
 
-    fun signIn(email: String, password: String) {
+    fun signIn(
+        email: String,
+        password: String
+    ) {
         viewModelScope.launch {
             try {
                 userRepository.signIn(email, password)
@@ -113,8 +115,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun signOut(){
-        viewModelScope.launch{
+    fun signOut() {
+        viewModelScope.launch {
             try {
                 userRepository.signOut()
                 _uiState.update { SignInUiState.Success(true) }
@@ -125,8 +127,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun deleteAccount(){
-        viewModelScope.launch{
+    fun deleteAccount() {
+        viewModelScope.launch {
             try {
                 userRepository.deleteAccount()
                 _uiState.update { SignInUiState.Success(true) }
@@ -137,8 +139,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun resetPassword(emailAddress: String){
-        viewModelScope.launch{
+    fun resetPassword(emailAddress: String) {
+        viewModelScope.launch {
             try {
                 userRepository.resetPassword(emailAddress)
                 _resetPassword.value = "Check your email!"

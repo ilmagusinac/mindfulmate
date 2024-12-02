@@ -1,6 +1,5 @@
 package com.example.mindfulmate.presentation.ui.screen.chat.component
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,50 +25,6 @@ import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.util.MessageModel
-/*
-@Composable
-fun MessageList(
-    messageList: List<MessageModel>,
-    modifier: Modifier = Modifier,
-    showBackButton: Boolean = true,
-    onBackButtonClick: (() -> Unit)? = null
-) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (showBackButton && onBackButtonClick != null) {
-            IconButton(onClick = { onBackButtonClick() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = stringResource(id = R.string.navigate_back_description),
-                    modifier = Modifier.size(
-                        width = dimensionResource(id = R.dimen.width_medium),
-                        height = dimensionResource(id = R.dimen.height_medium)
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_xxxmedium)))
-        }
-        Text(
-            text = stringResource(id = R.string.chat_with_your_mate),
-            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium)),
-            style = MaterialTheme.typography.titleLarge.copy(
-                color = Grey,
-                fontSize = 20.sp
-            )
-        )
-        Spacer(modifier = Modifier.weight(1f))
-    }
-    LazyColumn(
-        modifier = modifier,
-        reverseLayout = true
-    ) {
-        items(messageList.reversed()) {
-            MessageRow(messageModel = it)
-        }
-    }
-}*/
 
 @Composable
 fun MessageList(
@@ -110,7 +65,6 @@ fun MessageList(
             )
         }
     }
-
     LazyColumn(
         modifier = modifier,
         reverseLayout = true

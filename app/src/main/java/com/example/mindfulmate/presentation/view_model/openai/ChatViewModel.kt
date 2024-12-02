@@ -5,20 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.mindfulmate.presentation.util.MessageModel
 import com.example.mindfulmate.domain.usecase.openai.ProcessMessageUseCase
 import com.example.mindfulmate.domain.usecase.user.GetUserUseCase
-import com.example.mindfulmate.presentation.ui.screen.profile.util.ProfileParams
-import com.example.mindfulmate.presentation.view_model.profile.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val processMessageUseCase: ProcessMessageUseCase,
-    private val getUserUseCase: GetUserUseCase,
+    private val getUserUseCase: GetUserUseCase
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
@@ -26,10 +23,6 @@ class ChatViewModel @Inject constructor(
 
     private val _username = MutableStateFlow<String?>(null)
     val username: StateFlow<String?> = _username.asStateFlow()
-/*
-    init {
-        loadUser()
-    }*/
 
     fun sendMessage(userMessage: String) {
         if (userMessage.isBlank()) return
@@ -55,7 +48,7 @@ class ChatViewModel @Inject constructor(
                 val currentUser = getUserUseCase()
                 _username.value = currentUser.username
             } catch (e: Exception) {
-                _username.value = "Unknown User"
+                _username.value = "unknown"
             }
         }
     }

@@ -28,13 +28,12 @@ import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMateButton
 import com.example.mindfulmate.presentation.ui.component.MindfulMatePartialBottomSheet
-import com.example.mindfulmate.presentation.ui.screen.home.component.Community
+import com.example.mindfulmate.presentation.ui.screen.home.util.Community
 import com.example.mindfulmate.presentation.ui.screen.home.component.CommunityRow
 import com.example.mindfulmate.presentation.ui.screen.home.component.HeaderWithComponents
 import com.example.mindfulmate.presentation.util.DevicesPreview
 import com.example.mindfulmate.presentation.util.MessageModel
 import com.example.mindfulmate.presentation.view_model.openai.ChatViewModel
-import com.example.mindfulmate.presentation.view_model.profile.ProfileViewModel
 
 @Composable
 fun HomeScreen(

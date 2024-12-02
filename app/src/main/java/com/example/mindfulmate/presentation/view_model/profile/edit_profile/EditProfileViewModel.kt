@@ -1,9 +1,8 @@
-package com.example.mindfulmate.presentation.view_model.profile
+package com.example.mindfulmate.presentation.view_model.profile.edit_profile
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mindfulmate.data.service.AccountService
 import com.example.mindfulmate.domain.model.user.User
 import com.example.mindfulmate.domain.usecase.user.GetUserUseCase
 import com.example.mindfulmate.domain.usecase.user.UpdateUserUseCase
@@ -21,8 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase,
-    private val accountService: AccountService
+    private val updateUserUseCase: UpdateUserUseCase
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<EditProfileUiState> = MutableStateFlow(EditProfileUiState.Init)
@@ -49,7 +47,11 @@ class EditProfileViewModel @Inject constructor(
                 )
                 _uiState.update { EditProfileUiState.Success(editProfileParams = editProfileParams) }
             } catch (e: Exception) {
-                _uiState.update { EditProfileUiState.Failure(e.localizedMessage ?: "Failed to load user data") }
+                _uiState.update {
+                    EditProfileUiState.Failure(
+                        e.localizedMessage ?: "Failed to load user data"
+                    )
+                }
             }
         }
     }
@@ -69,42 +71,14 @@ class EditProfileViewModel @Inject constructor(
                 loadUser()
                 triggerNavigation(EditProfileNavigationEvent.Navigate)
             } catch (e: Exception) {
-                _uiState.update { EditProfileUiState.Failure(e.localizedMessage ?: "Failed to update user data") }
-            }
-        }
-    }
-    fun updateEmailInFirebaseAuth(newEmail: String) {
-        viewModelScope.launch {
-            try {
-                accountService.updateEmail(newEmail)
-            } catch (e: Exception) {
                 _uiState.update {
-                    EditProfileUiState.Failure(e.localizedMessage ?: "Failed to update email in Firebase Authentication")
+                    EditProfileUiState.Failure(
+                        e.localizedMessage ?: "Failed to update user data"
+                    )
                 }
             }
         }
     }
-
-    fun updateEmailFromFirestore() {
-        viewModelScope.launch {
-            _uiState.update { EditProfileUiState.Loading }
-
-            try {
-                // Fetch the user data from Firestore
-                val user = getUserUseCase()
-
-                // Update the email in Firebase Authentication
-                accountService.updateEmail(user.email)
-
-                _uiState.update { EditProfileUiState.Success() }
-            } catch (e: Exception) {
-                _uiState.update {
-                    EditProfileUiState.Failure(e.localizedMessage ?: "Failed to update email in Firebase Authentication")
-                }
-            }
-        }
-    }
-
 
     private fun triggerNavigation(event: EditProfileNavigationEvent) {
         viewModelScope.launch {

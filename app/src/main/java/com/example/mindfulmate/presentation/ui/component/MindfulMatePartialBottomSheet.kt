@@ -2,7 +2,6 @@ package com.example.mindfulmate.presentation.ui.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,9 +40,7 @@ fun MindfulMatePartialBottomSheet(
             onDismissRequest = onDismissRequest,
             containerColor = DuskyWhite
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Box(
                     modifier = Modifier
                         .weight(1f)

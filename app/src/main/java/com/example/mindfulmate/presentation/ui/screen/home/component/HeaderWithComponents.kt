@@ -45,10 +45,7 @@ fun HeaderWithComponents(
     onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
+    Box(modifier = modifier.fillMaxWidth()) {
         BackgroundHeader()
         Column(
             modifier = Modifier.padding(

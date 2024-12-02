@@ -13,10 +13,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -32,7 +29,6 @@ import com.example.mindfulmate.presentation.navigation.bottom_bar.BottomBarNavig
 import com.example.mindfulmate.presentation.navigation.drawer.Drawer
 import com.example.mindfulmate.presentation.navigation.drawer.DrawerShape
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.screen.settings.SettingsScreen
 import com.example.mindfulmate.presentation.view_model.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -52,15 +48,15 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = currentBackStackEntry.value?.destination?.route
                 val showBottomBar = currentRoute in getBottomNavRoutes()
 
-                    BottomNavScaffold(
-                        navController = navController,
-                        mainViewModel = mainViewModel,
-                        showBottomBar = showBottomBar
-                    )
-                }
+                BottomNavScaffold(
+                    navController = navController,
+                    mainViewModel = mainViewModel,
+                    showBottomBar = showBottomBar
+                )
             }
         }
     }
+}
 
 @Composable
 fun BottomNavScaffold(
@@ -69,12 +65,13 @@ fun BottomNavScaffold(
     showBottomBar: Boolean
 ) {
     val bottomNavigationItems = BottomBarNavigationItems.items
-    var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val currentBackStackEntry =
         navController.currentBackStackEntryFlow.collectAsStateWithLifecycle(null)
     val currentRoute = currentBackStackEntry.value?.destination?.route
+    val selectedItemIndex = bottomNavigationItems.indexOfFirst { it.route == currentRoute }
+        .takeIf { it != -1 } ?: 0
     val username by mainViewModel.username.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -118,7 +115,6 @@ fun BottomNavScaffold(
                         items = bottomNavigationItems,
                         selectedItemIndex = selectedItemIndex,
                         onItemSelected = { index ->
-                            selectedItemIndex = index
                             navController.navigate(bottomNavigationItems[index].route) {
                                 launchSingleTop = true
                                 popUpTo(Screen.Home.route) { inclusive = false }

@@ -13,10 +13,11 @@ sealed class Screen(val route: String) {
     data object Profile : Screen(route = "profile_screen")
     data object EditProfile : Screen(route = "edit_profile_screen")
     data object Chat : Screen(route = "chat_screen")
-    data object PartialBottomSheet : Screen(route = "partial_bottom_sheet")
     data object Settings : Screen(route = "settings_screen")
+    data object EditCredential : Screen(route = "edit_credential_screen")
+    data object DeleteAccount : Screen(route = "delete_account_screen")
 
-    companion object{
+    companion object {
         fun getBottomNavRoutes(): List<String> {
             return listOf(
                 Home.route,

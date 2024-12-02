@@ -22,9 +22,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel() {
+class SignUpViewModel @Inject constructor(private val userRepository: UserRepository) :
+    ViewModel() {
 
     private val _uiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState.Init)
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
@@ -39,10 +38,15 @@ class SignUpViewModel @Inject constructor(
     val isSignUpEnabled: StateFlow<Boolean> = _isSignUpEnabled.asStateFlow()
 
     fun validateInput(email: String, password: String, confirmPassword: String) {
-        _isSignUpEnabled.value = email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
+        _isSignUpEnabled.value =
+            email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
     }
 
-    fun signUp(email: String, password: String, confirmPassword: String) {
+    fun signUp(
+        email: String,
+        password: String,
+        confirmPassword: String
+    ) {
         viewModelScope.launch {
             if (password != confirmPassword) {
                 _uiState.update { SignUpUiState.Failure("Passwords do not match") }

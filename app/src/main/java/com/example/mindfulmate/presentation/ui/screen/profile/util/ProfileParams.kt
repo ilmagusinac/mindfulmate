@@ -5,5 +5,5 @@ data class ProfileParams(
     val lastName: String = "",
     val username: String = "",
     val email: String = "",
-    val number: String = "",
+    val number: String = ""
 )

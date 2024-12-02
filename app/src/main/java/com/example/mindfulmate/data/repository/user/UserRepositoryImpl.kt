@@ -16,14 +16,24 @@ class UserRepositoryImpl @Inject constructor(
     override val currentUserId: String get() = accountService.currentUserId
 
     override fun hasUser(): Boolean = accountService.hasUser()
-    override suspend fun signIn(email: String, password: String) = accountService.signIn(email, password)
-    override suspend fun signUp(email: String, password: String) = accountService.signUp(email, password)
-    override suspend fun signInWithGoogle(idToken: String) = accountService.signInWithGoogle(idToken)
+    override suspend fun signIn(email: String, password: String) =
+        accountService.signIn(email, password)
+
+    override suspend fun signUp(email: String, password: String) =
+        accountService.signUp(email, password)
+
+    override suspend fun signInWithGoogle(idToken: String) =
+        accountService.signInWithGoogle(idToken)
+
     override suspend fun signOut() = accountService.signOut()
     override suspend fun deleteAccount() = accountService.deleteAccount()
-    override suspend fun resetPassword(emailAddress: String) = accountService.resetPassword(emailAddress)
+    override suspend fun resetPassword(emailAddress: String) =
+        accountService.resetPassword(emailAddress)
+
     override suspend fun addUser(user: User) = userService.addUser(user)
     override suspend fun getUser(): User = userService.getUser()
     override suspend fun updateUser(user: User) = userService.updateUser(user)
     override suspend fun deleteUser() = userService.deleteUser()
+    override suspend fun updateEmail(email: String, password: String, newEmail: String) =
+        accountService.updateEmail(email, password, newEmail)
 }

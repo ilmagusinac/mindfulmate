@@ -12,6 +12,8 @@ import com.example.mindfulmate.presentation.ui.component.LoadingPlaceholder
 import com.example.mindfulmate.presentation.ui.screen.chat.ChatScreen
 import com.example.mindfulmate.presentation.ui.screen.community.CommunityScreen
 import com.example.mindfulmate.presentation.ui.screen.home.HomeScreen
+import com.example.mindfulmate.presentation.ui.screen.profile.DeleteAccountScreen
+import com.example.mindfulmate.presentation.ui.screen.profile.EditCredentialScreen
 import com.example.mindfulmate.presentation.ui.screen.profile.EditProfileScreen
 import com.example.mindfulmate.presentation.ui.screen.profile.ProfileScreen
 import com.example.mindfulmate.presentation.ui.screen.resources.ResourcesScreen
@@ -75,7 +77,6 @@ fun NavGraph(
             )
         }
         composable(route = Screen.Community.route) {
-            //ChatScreen()
             CommunityScreen()
         }
         composable(route = Screen.Resources.route) {
@@ -85,13 +86,12 @@ fun NavGraph(
             ProfileScreen(
                 viewModel = hiltViewModel(),
                 onGoBackClick = { navController.popBackStack() },
-                onEditProfileClick = { navController.navigate(Screen.EditProfile.route)}
+                onEditProfileClick = { navController.navigate(Screen.EditProfile.route) }
             )
         }
         composable(route = Screen.EditProfile.route) {
             EditProfileScreen(
                 viewModel = hiltViewModel(),
-                onResetPasswordClick = { navController.navigate(Screen.ResetPassword.route) },
                 onGoBackClick = { navController.popBackStack() },
                 navigate = { navController.navigate(Screen.Settings.route) }
             )
@@ -110,12 +110,33 @@ fun NavGraph(
                 viewModel = hiltViewModel(),
                 onGoToProfileClick = { navController.navigate(Screen.Profile.route) },
                 onEditProfileClick = { navController.navigate(Screen.EditProfile.route) },
+                onEditCredentialsClick = { navController.navigate(Screen.EditCredential.route) },
                 navigate = {
                     navController.navigate(Screen.Welcome.route) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
+            )
+        }
+        composable(route = Screen.EditCredential.route) {
+            EditCredentialScreen(
+                viewModel = hiltViewModel(),
+                onGoBackClick = { navController.navigate(Screen.Settings.route) },
+                onDeleteAccountClick = { navController.navigate(Screen.DeleteAccount.route) },
+                navigate = { navController.navigate(Screen.Welcome.route) }
+            )
+        }
+        composable(route = Screen.DeleteAccount.route) {
+            DeleteAccountScreen(
+                viewModel = hiltViewModel(),
+                navigate = {
+                    navController.navigate(Screen.Welcome.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onGoBackClick = { navController.navigate(Screen.EditCredential.route) }
             )
         }
     }

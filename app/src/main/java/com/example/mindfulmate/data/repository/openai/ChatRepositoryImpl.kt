@@ -7,9 +7,7 @@ import com.example.mindfulmate.data.network.openai.OpenAIService
 import com.example.mindfulmate.domain.repository.openai.ChatRepository
 import javax.inject.Inject
 
-class ChatRepositoryImpl @Inject constructor(
-    private val apiService: OpenAIService
-) : ChatRepository {
+class ChatRepositoryImpl @Inject constructor(private val apiService: OpenAIService) : ChatRepository {
 
     override suspend fun sendMessage(messages: List<ChatMessage>): ChatResponse? {
         return try {

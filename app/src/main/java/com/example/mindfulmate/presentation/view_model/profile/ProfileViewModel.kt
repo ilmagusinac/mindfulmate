@@ -2,11 +2,7 @@ package com.example.mindfulmate.presentation.view_model.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mindfulmate.domain.model.user.User
-import com.example.mindfulmate.domain.usecase.user.AddUserUseCase
-import com.example.mindfulmate.domain.usecase.user.DeleteUserUseCase
 import com.example.mindfulmate.domain.usecase.user.GetUserUseCase
-import com.example.mindfulmate.domain.usecase.user.UpdateUserUseCase
 import com.example.mindfulmate.presentation.ui.screen.profile.util.ProfileParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase,
-    private val addUserUseCase: AddUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase,
-    private val deleteUserUseCase: DeleteUserUseCase
-) : ViewModel() {
+class ProfileViewModel @Inject constructor(private val getUserUseCase: GetUserUseCase) : ViewModel() {
 
     private val _user: MutableStateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState.Init)
     val user: StateFlow<ProfileUiState> = _user.asStateFlow()
@@ -52,39 +43,4 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-
-    fun addUser(user: User) {
-        viewModelScope.launch {
-            try {
-                addUserUseCase(user)
-                loadUser()
-            } catch (e: Exception) {
-                // Handle error
-            }
-        }
-    }
-
-    fun updateUser(user: User) {
-        viewModelScope.launch {
-            try {
-                updateUserUseCase(user)
-                loadUser()
-            } catch (e: Exception) {
-                // Handle error
-            }
-        }
-    }
-/*
-    fun deleteUser() {
-        viewModelScope.launch {
-            try {
-                deleteUserUseCase()
-                _user.value = null // Reset the user state
-            } catch (e: Exception) {
-                // Handle error
-            }
-        }
-    }
- */
 }
-

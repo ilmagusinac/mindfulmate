@@ -29,15 +29,14 @@ import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_pro
 import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_profile.EditProfileInformationDetails
 import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_profile.EditProfileSection
 import com.example.mindfulmate.presentation.ui.screen.profile.util.EditProfileParams
-import com.example.mindfulmate.presentation.view_model.profile.EditProfileNavigationEvent
-import com.example.mindfulmate.presentation.view_model.profile.EditProfileUiState
-import com.example.mindfulmate.presentation.view_model.profile.EditProfileViewModel
+import com.example.mindfulmate.presentation.view_model.profile.edit_profile.EditProfileNavigationEvent
+import com.example.mindfulmate.presentation.view_model.profile.edit_profile.EditProfileUiState
+import com.example.mindfulmate.presentation.view_model.profile.edit_profile.EditProfileViewModel
 
 @Composable
 fun EditProfileScreen(
     viewModel: EditProfileViewModel,
     onGoBackClick: () -> Unit,
-    onResetPasswordClick: () -> Unit,
     navigate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -90,7 +89,6 @@ fun EditProfileScreen(
                     onEmailValueChange = { emailState = it },
                     onNumberValueChange = { numberState = it }
                 ),
-                onResetPasswordClick = onResetPasswordClick,
                 onGoBackClick = onGoBackClick,
                 onEditProfileClick = {
                     viewModel.updateUser(
@@ -132,7 +130,6 @@ private fun NavigationEventHandler(
 @Composable
 private fun EditProfileScreen(
     editProfileParams: EditProfileParams,
-    onResetPasswordClick: () -> Unit,
     onGoBackClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -155,13 +152,10 @@ private fun EditProfileScreen(
             firstNameFieldValue = editProfileParams.firstNameFieldValue,
             lastNameFieldValue = editProfileParams.lastNameFieldValue,
             usernameFieldValue = editProfileParams.usernameFieldValue,
-            //emailFieldValue = editProfileParams.emailFieldValue,
             numberFieldValue = editProfileParams.numberFieldValue,
-            onResetPasswordClick = onResetPasswordClick,
             onFirstNameValueChange = editProfileParams.onFirstNameValueChange,
             onLastNameValueChange = editProfileParams.onLastNameValueChange,
             onUsernameValueChange = editProfileParams.onUsernameValueChange,
-            //onEmailValueChange = editProfileParams.onEmailValueChange,
             onNumberValueChange = editProfileParams.onNumberValueChange
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_default)))
@@ -195,7 +189,6 @@ private fun EditProfileScreenPreview() {
                 onNewPasswordValueChange = {},
                 onRepeatNewPasswordFieldValueChange = {}
             ),
-            onResetPasswordClick = {},
             onGoBackClick = {},
             onEditProfileClick = {}
         )

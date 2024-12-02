@@ -8,5 +8,6 @@ sealed interface ProfileUiState {
     data class Success(
         val profileParams: ProfileParams = ProfileParams()
     ) : ProfileUiState
+
     data class Failure(val message: String) : ProfileUiState
 }

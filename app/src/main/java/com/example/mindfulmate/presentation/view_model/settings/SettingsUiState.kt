@@ -9,5 +9,6 @@ sealed interface SettingsUiState {
         val isLoggedIn: Boolean = true,
         val settingsParams: SettingsParams = SettingsParams()
     ) : SettingsUiState
+
     data class Failure(val message: String) : SettingsUiState
 }

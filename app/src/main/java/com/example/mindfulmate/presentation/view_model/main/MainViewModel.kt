@@ -37,8 +37,8 @@ class MainViewModel @Inject constructor(
         return accountService.hasUser()
     }
 
-    fun signOut(){
-        viewModelScope.launch{
+    fun signOut() {
+        viewModelScope.launch {
             try {
                 userRepository.signOut()
                 _uiState.update { SignInUiState.Success(true) }
@@ -61,7 +61,7 @@ class MainViewModel @Inject constructor(
                 val currentUser = getUserUseCase()
                 _username.value = currentUser.username
             } catch (e: Exception) {
-                _username.value = "Unknown User"
+                _username.value = "unknown"
             }
         }
     }

@@ -82,4 +82,12 @@
     <string name="credentials_change_title">Manage Account Credentials</string>
     <string name="credentials_change_label">Make changes to your credentials</string>
     <string name="edit_credential">Edit Credential</string>
+    <string name="change_your_email_credential">Change your email credential</string>
+    <string name="current_email">Current Email</string>
+    <string name="enter_current_email">Enter your current Email</string>
+    <string name="new_email">New Email</string>
+    <string name="enter_new_email">Enter your new Email</string>
+    <string name="change_password_credential">Change your password credential</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_your_mindful_mate_account">Delete your Mindful Mate account</string>
 </resources>

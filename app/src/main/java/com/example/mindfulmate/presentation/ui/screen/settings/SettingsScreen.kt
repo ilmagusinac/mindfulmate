@@ -37,6 +37,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onGoToProfileClick: () -> Unit,
     onEditProfileClick: () -> Unit,
+    onEditCredentialsClick: () -> Unit,
     navigate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,7 +62,7 @@ fun SettingsScreen(
         is SettingsUiState.Success -> {
             SettingsScreen(
                 settingsParams = (uiState as SettingsUiState.Success).settingsParams,
-                onEditCredentialsClick = {},
+                onEditCredentialsClick = onEditCredentialsClick,
                 onNotificationsReminders = {},
                 onEmergencyContactSupportClick = {},
                 onSignOutClick = { viewModel.signOut() },

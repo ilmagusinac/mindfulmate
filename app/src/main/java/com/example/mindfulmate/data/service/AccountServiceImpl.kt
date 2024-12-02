@@ -14,9 +14,8 @@ import javax.inject.Inject
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class AccountServiceImpl @Inject constructor(
-    private val userService: UserService
-) : AccountService {
+class AccountServiceImpl @Inject constructor(private val userService: UserService) :
+    AccountService {
 
     override val currentUser: Flow<User?>
         get() = callbackFlow {
@@ -47,24 +46,22 @@ class AccountServiceImpl @Inject constructor(
             Firebase.auth.currentUser!!.linkWithCredential(firebaseCredential).await()
         }
 
-        val currentUser = Firebase.auth.currentUser
-            ?: throw Exception("Google sign-in failed, no user logged in")
+        val currentUser =
+            Firebase.auth.currentUser ?: throw Exception("Google sign-in failed, no user logged in")
 
         val userExists = try {
-            userService.getUser() // This will throw an exception if the user doesn't exist
+            userService.getUser()
             true
         } catch (e: Exception) {
             false
         }
-
-        // Add the user to Firestore if they don't exist
         if (!userExists) {
             val newUser = User(
                 id = currentUser.uid,
-                firstName = "", // Default values, can be updated later
-                lastName = "",
-                username = "user",
-                number = "",
+                firstName = "unknown",
+                lastName = "unknown",
+                username = "unknown",
+                number = "unknown",
                 email = currentUser.email ?: throw Exception("Email not available")
             )
             userService.addUser(newUser)
@@ -75,17 +72,14 @@ class AccountServiceImpl @Inject constructor(
         Firebase.auth.createUserWithEmailAndPassword(email, password).await()
 
         val currentUser = Firebase.auth.currentUser ?: throw Exception("User creation failed")
-        // Create a User object with default values or initial data
         val user = User(
             id = currentUser.uid,
-            firstName = "",
-            lastName = "",
-            username = "user",
-            number = "",
+            firstName = "unknown",
+            lastName = "unknown",
+            username = "unknown",
+            number = "unknown",
             email = currentUser.email ?: throw Exception("Email not available")
         )
-
-        // Add user to Firestore
         userService.addUser(user)
     }
 
@@ -112,29 +106,15 @@ class AccountServiceImpl @Inject constructor(
             }
     }
 
-    override suspend fun updateEmail(newEmail: String) {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-            ?: throw Exception("User not logged in")
-
+    override suspend fun updateEmail(email: String, password: String, newEmail: String) {
+        val user = Firebase.auth.currentUser ?: throw Exception("User not logged in")
+        val credential = EmailAuthProvider.getCredential(email, password)
         try {
-            currentUser.updateEmail(newEmail).await()
+            user.reauthenticate(credential).await()
+            user.verifyBeforeUpdateEmail(newEmail).await()
+            Log.d("AccountService", "Verification email sent to the old email address.")
         } catch (e: Exception) {
-            if (e.message?.contains("requires-recent-login") == true) {
-                throw Exception("Re-authentication required. Please log in again.")
-            } else {
-                throw e
-            }
+            throw Exception("Failed to update email: ${e.localizedMessage}")
         }
     }
-
-    override suspend fun reauthenticateUser(password: String) {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-            ?: throw Exception("User not logged in")
-        val email = currentUser.email ?: throw Exception("Email not found for user")
-
-        val credential = EmailAuthProvider.getCredential(email, password)
-        currentUser.reauthenticate(credential).await()
-    }
-
-
 }

@@ -52,7 +52,7 @@ fun ProfileInformationSection(
 fun ContentRow(
     title: String,
     label: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier

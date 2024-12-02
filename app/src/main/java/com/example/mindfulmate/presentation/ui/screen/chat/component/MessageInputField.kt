@@ -72,7 +72,7 @@ fun MessageInputField(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
                 )
             )
         }

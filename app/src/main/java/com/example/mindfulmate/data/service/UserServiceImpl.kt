@@ -5,8 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class UserServiceImpl (
-    private val firestore: FirebaseFirestore,
+class UserServiceImpl(
+    firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : UserService {
 

@@ -40,6 +40,7 @@ import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
+import com.example.mindfulmate.presentation.ui.screen.home.util.Community
 
 @Composable
 fun CommunityRow(
@@ -68,13 +69,6 @@ fun CommunityRow(
         }
     }
 }
-
-data class Community(
-    val title: String,
-    val membersCount: String,
-    val backgroundImage: Int,
-    val logo: Int
-)
 
 @Composable
 fun CommunityCard(

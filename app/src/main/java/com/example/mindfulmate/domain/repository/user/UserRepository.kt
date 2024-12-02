@@ -13,9 +13,10 @@ interface UserRepository {
     suspend fun signInWithGoogle(idToken: String)
     suspend fun signOut()
     suspend fun deleteAccount()
-    suspend fun  resetPassword(emailAddress: String)
+    suspend fun resetPassword(emailAddress: String)
     suspend fun addUser(user: User)
     suspend fun getUser(): User
     suspend fun updateUser(user: User)
     suspend fun deleteUser()
+    suspend fun updateEmail(email: String, password: String, newEmail: String)
 }

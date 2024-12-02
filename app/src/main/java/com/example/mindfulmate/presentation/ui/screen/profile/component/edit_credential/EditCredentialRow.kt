@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,13 +41,14 @@ import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 fun EditCredentialRow(
     title: String,
     label: String,
-    expandedContent: @Composable () -> Unit,
-    onRowIconClick: () -> Unit,
+    expandedContent: (@Composable () -> Unit)? = null,
+    isExpandable: Boolean = true,
     modifier: Modifier = Modifier,
     @DrawableRes placeholderRes: Int = R.drawable.ic_profile,
     tint: Color = DuskyBlue,
+    onArrowClick: () -> Unit = {}
 ) {
-    var isExpanded by remember {mutableStateOf(false)}
+    var isExpanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -59,41 +59,58 @@ fun EditCredentialRow(
             )
             .fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconPlacement(
-                placeholderRes = placeholderRes,
-                tint = tint
-            )
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = Grey,
-                        fontSize = 14.sp
-                    )
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconPlacement(
+                    placeholderRes = placeholderRes,
+                    tint = tint
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = LightGrey,
-                        fontSize = 12.sp
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            color = Grey,
+                            fontSize = 14.sp
+                        )
                     )
-                )
-
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = LightGrey,
+                            fontSize = 12.sp
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                if (isExpandable) {
+                    Icon(
+                        painter = if (isExpanded) painterResource(id = R.drawable.ic_arrow_down)
+                        else painterResource(id = R.drawable.ic_arrow_right),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.icon_small))
+                            .clickable { isExpanded = !isExpanded },
+                        tint = LightGrey
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.icon_small))
+                            .clickable { onArrowClick() },
+                        tint = LightGrey
+                    )
+                }
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.icon_small))
-                    .clickable { onRowIconClick() },
-                tint = LightGrey
-            )
+            if (isExpandable && isExpanded && expandedContent != null) {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
+                expandedContent()
+            }
         }
     }
 }
@@ -103,8 +120,8 @@ fun IconPlacement(
     modifier: Modifier = Modifier,
     @DrawableRes placeholderRes: Int = R.drawable.ic_profile,
     backgroundColor: Color = DuskyGrey,
-    size: Dp = dimensionResource(id = R.dimen.icon_large),
-    tint: Color = DuskyBlue
+     size: Dp = dimensionResource(id = R.dimen.icon_large),
+   tint: Color = DuskyBlue
 ) {
     Box(
         modifier = modifier
@@ -136,7 +153,7 @@ private fun ContentRowPreview() {
         EditCredentialRow(
             title = "My Account",
             label = "Make changes to your account",
-            onRowIconClick = {}
+            expandedContent = {}
         )
     }
 }

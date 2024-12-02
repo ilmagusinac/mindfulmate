@@ -42,9 +42,7 @@ fun ProfileScreen(
         }
 
         is ProfileUiState.Failure -> {
-            ErrorPlaceholder(
-                onConfirmationClick = {}
-            )
+            ErrorPlaceholder(onConfirmationClick = {})
         }
 
         is ProfileUiState.Success -> {
