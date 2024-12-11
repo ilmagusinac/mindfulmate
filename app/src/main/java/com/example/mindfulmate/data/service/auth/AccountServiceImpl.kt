@@ -1,7 +1,8 @@
-package com.example.mindfulmate.data.service
+package com.example.mindfulmate.data.service.auth
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import com.example.mindfulmate.data.service.user.UserService
 import com.example.mindfulmate.domain.model.user.User
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth

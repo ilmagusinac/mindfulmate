@@ -1,4 +1,4 @@
-package com.example.mindfulmate.data.service
+package com.example.mindfulmate.data.service.auth
 
 import com.example.mindfulmate.domain.model.user.User
 import kotlinx.coroutines.flow.Flow

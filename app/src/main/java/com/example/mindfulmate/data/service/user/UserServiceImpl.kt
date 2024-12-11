@@ -1,4 +1,4 @@
-package com.example.mindfulmate.data.service
+package com.example.mindfulmate.data.service.user
 
 import com.example.mindfulmate.domain.model.user.User
 import com.google.firebase.auth.FirebaseAuth
