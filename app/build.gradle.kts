@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.mindfulmate"
-        minSdk = 24
+        minSdk = 26 //24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -99,6 +99,15 @@ dependencies {
 
     //Coil
     implementation("io.coil-kt:coil-compose:2.3.0")
+
+    //WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
+
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    //Y-Charts
+    implementation ("co.yml:ycharts:2.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
