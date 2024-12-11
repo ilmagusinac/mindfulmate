@@ -16,9 +16,9 @@ object BottomBarNavigationItems {
             route = Screen.Community.route
         ),
         BottomBarNavigationItem(
-            titleId = R.string.resources,
-            iconRes = R.drawable.ic_resources,
-            route = Screen.Resources.route
+            titleId = R.string.chat,
+            iconRes = R.drawable.ic_chat,
+            route = Screen.DailyCheckIn.route
         ),
         BottomBarNavigationItem(
             titleId = R.string.profile,
