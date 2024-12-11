@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
@@ -113,6 +114,15 @@ fun MindfulMatePopupTextField(
                     )
                 )
             }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
+            message?.let {
+                Text(
+                    text = it,
+                    color = Blue,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light),
+                    textAlign = TextAlign.Center
+                )
+            }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -136,13 +146,6 @@ fun MindfulMatePopupTextField(
                         modifier = Modifier.weight(1f)
                     )
                 }
-            }
-            message?.let {
-                Text(
-                    text = it,
-                    color = Blue,
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light)
-                )
             }
         }
     }

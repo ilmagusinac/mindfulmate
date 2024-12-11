@@ -10,5 +10,7 @@ data class ContentRow(
     val onRowClick: () -> Unit,
     @DrawableRes val placeholderRes: Int,
     val tint: Color = DuskyBlue,
-    val rowType: ContentRowType = ContentRowType.ICON
+    val rowType: ContentRowType = ContentRowType.ICON,
+    val switchState: Boolean? = null,
+    val onSwitchChange: ((Boolean) -> Unit)? = null
 )

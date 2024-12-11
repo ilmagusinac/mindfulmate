@@ -21,6 +21,7 @@ import com.example.mindfulmate.presentation.ui.component.ErrorPlaceholder
 import com.example.mindfulmate.presentation.ui.component.LoadingPlaceholder
 import com.example.mindfulmate.presentation.ui.screen.profile.component.profile.ProfileHeaderSection
 import com.example.mindfulmate.presentation.ui.screen.profile.component.profile.ProfileInformationSection
+import com.example.mindfulmate.presentation.ui.screen.profile.component.profile.ProfileRowSection
 import com.example.mindfulmate.presentation.ui.screen.profile.component.profile.ProfileSection
 import com.example.mindfulmate.presentation.ui.screen.profile.util.ProfileInformation
 import com.example.mindfulmate.presentation.ui.screen.profile.util.ProfileParams
@@ -30,6 +31,8 @@ import com.example.mindfulmate.presentation.view_model.profile.ProfileViewModel
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
+    onEmotionalAnalyticsClick: () -> Unit,
+    onDailyInputClick: () -> Unit,
     onGoBackClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -48,6 +51,8 @@ fun ProfileScreen(
         is ProfileUiState.Success -> {
             ProfileScreen(
                 profileParams = (uiState as ProfileUiState.Success).profileParams,
+                onEmotionalAnalyticsClick = onEmotionalAnalyticsClick,
+                onDailyInputClick = onDailyInputClick,
                 onGoBackClick = onGoBackClick,
                 onEditProfileClick = onEditProfileClick,
                 modifier = modifier
@@ -63,6 +68,8 @@ fun ProfileScreen(
 @Composable
 private fun ProfileScreen(
     profileParams: ProfileParams,
+    onEmotionalAnalyticsClick: () -> Unit,
+    onDailyInputClick: () -> Unit,
     onGoBackClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -112,6 +119,21 @@ private fun ProfileScreen(
                 )
             )
         )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+        ProfileRowSection(
+            title = stringResource(id = R.string.get_emotional_analytics_title),
+            label = stringResource(id = R.string.get_emotional_analytics_label),
+            placeholderRes = R.drawable.ic_analytics,
+            onRowClick = onEmotionalAnalyticsClick
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+        ProfileRowSection(
+            title = stringResource(id = R.string.daily_input_optional_title),
+            label = stringResource(id = R.string.daily_input_optional_label),
+            placeholderRes = R.drawable.ic_heart,
+            onRowClick = onDailyInputClick
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
     }
 }
 
@@ -127,6 +149,8 @@ private fun ProfileScreenPreview() {
                 email = "username@gmail.com",
                 number = "+387 123 456",
             ),
+            onEmotionalAnalyticsClick = {},
+            onDailyInputClick = {},
             onGoBackClick = {},
             onEditProfileClick = {}
         )

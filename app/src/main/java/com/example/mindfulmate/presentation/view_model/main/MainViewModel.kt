@@ -2,7 +2,7 @@ package com.example.mindfulmate.presentation.view_model.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mindfulmate.data.service.AccountService
+import com.example.mindfulmate.data.service.auth.AccountService
 import com.example.mindfulmate.domain.repository.user.UserRepository
 import com.example.mindfulmate.domain.usecase.user.GetUserUseCase
 import com.example.mindfulmate.presentation.view_model.signin.SignInNavigationEvent
@@ -33,8 +33,33 @@ class MainViewModel @Inject constructor(
     private val _username = MutableStateFlow<String?>(null)
     val username: StateFlow<String?> = _username.asStateFlow()
 
+    private val _isUsernameSet = MutableStateFlow(false)
+    val isUsernameSet: StateFlow<Boolean> = _isUsernameSet.asStateFlow()
+
+    private val _isSignUpFlow = MutableStateFlow(false)
+    val isSignUpFlow: StateFlow<Boolean> = _isSignUpFlow.asStateFlow()
+
+    fun triggerSignUpFlow() {
+        _isSignUpFlow.value = true
+    }
+
+    fun resetSignUpFlow() {
+        _isSignUpFlow.value = false
+    }
+
     fun isUserSignedIn(): Boolean {
         return accountService.hasUser()
+    }
+
+    fun checkUsernameStatus() {
+        viewModelScope.launch {
+            try {
+                val user = getUserUseCase()
+                _isUsernameSet.value = !user.username.isNullOrEmpty()
+            } catch (e: Exception) {
+                _isUsernameSet.value = false
+            }
+        }
     }
 
     fun signOut() {

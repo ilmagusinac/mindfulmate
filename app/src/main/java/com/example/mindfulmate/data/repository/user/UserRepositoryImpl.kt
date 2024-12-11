@@ -1,7 +1,7 @@
 package com.example.mindfulmate.data.repository.user
 
-import com.example.mindfulmate.data.service.AccountService
-import com.example.mindfulmate.data.service.UserService
+import com.example.mindfulmate.data.service.auth.AccountService
+import com.example.mindfulmate.data.service.user.UserService
 import com.example.mindfulmate.domain.model.user.User
 import com.example.mindfulmate.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow

@@ -52,9 +52,9 @@ fun ContentRow(
     tint: Color = DuskyBlue,
     rowType: ContentRowType = ContentRowType.ICON,
     switchState: Boolean = false,
-    onSwitchChange: ((Boolean) -> Unit)? = null
+    //onSwitchChange: ((Boolean) -> Unit)? = null
 ) {
-    var checked by remember { mutableStateOf(switchState) }
+    //var checked by remember { mutableStateOf(switchState) }
 
     Box(
         modifier = modifier
@@ -106,11 +106,8 @@ fun ContentRow(
 
                 ContentRowType.SWITCH -> {
                     Switch(
-                        checked = checked,
-                        onCheckedChange = { isChecked ->
-                            checked = isChecked
-                            onSwitchChange?.invoke(isChecked)
-                        },
+                        checked = switchState,
+                        onCheckedChange = { onRowIconClick() },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = DuskyBlue,
                             uncheckedThumbColor = LightGrey,

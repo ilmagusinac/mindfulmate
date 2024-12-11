@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Blue
@@ -98,11 +99,14 @@ fun HeaderWithComponents(
 }
 
 @Composable
-fun BackgroundHeader(modifier: Modifier = Modifier) {
+fun BackgroundHeader(
+    heightIn: Dp = dimensionResource(id = R.dimen.height_xlarge),
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = dimensionResource(id = R.dimen.height_xlarge))
+            .heightIn(min = heightIn)
             .background(Blue)
             .innerShadow(
                 blur = dimensionResource(id = R.dimen.blur_medium),

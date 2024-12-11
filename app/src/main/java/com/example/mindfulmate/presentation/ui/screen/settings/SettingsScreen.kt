@@ -38,10 +38,13 @@ fun SettingsScreen(
     onGoToProfileClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onEditCredentialsClick: () -> Unit,
+    onAboutAppClick: () -> Unit,
+    onHelpSupportClick: () -> Unit,
     navigate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState: SettingsUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isNotificationsEnabled by viewModel.isNotificationsEnabled.collectAsStateWithLifecycle()
 
     NavigationEventHandler(
         viewModel = viewModel,
@@ -63,11 +66,12 @@ fun SettingsScreen(
             SettingsScreen(
                 settingsParams = (uiState as SettingsUiState.Success).settingsParams,
                 onEditCredentialsClick = onEditCredentialsClick,
-                onNotificationsReminders = {},
+                isNotificationsEnabled = isNotificationsEnabled,
+                onNotificationsReminders = { viewModel.toggleNotifications()},
                 onEmergencyContactSupportClick = {},
                 onSignOutClick = { viewModel.signOut() },
-                onHelpSupportClick = {},
-                onAboutAppClick = {},
+                onHelpSupportClick = onHelpSupportClick,
+                onAboutAppClick = onAboutAppClick,
                 onGoToProfileClick = onGoToProfileClick,
                 onEditProfileClick = onEditProfileClick,
                 modifier = modifier
@@ -99,6 +103,7 @@ private fun NavigationEventHandler(
 @Composable
 private fun SettingsScreen(
     settingsParams: SettingsParams,
+    isNotificationsEnabled: Boolean,
     onEditCredentialsClick: () -> Unit,
     onNotificationsReminders: () -> Unit,
     onEmergencyContactSupportClick: () -> Unit,
@@ -152,7 +157,9 @@ private fun SettingsScreen(
                     label = stringResource(id = R.string.notification_reminder_label),
                     onRowClick = onNotificationsReminders,
                     placeholderRes = R.drawable.ic_notification,
-                    rowType = ContentRowType.SWITCH
+                    rowType = ContentRowType.SWITCH,
+                    switchState = isNotificationsEnabled
+
                 ),
                 ContentRow(
                     title = stringResource(id = R.string.emergency_contact_title),
@@ -207,8 +214,9 @@ private fun SettingsScreenPreview() {
                 lastName = "",
                 username = ""
             ),
-            onEditCredentialsClick = {},
+            isNotificationsEnabled = true,
             onNotificationsReminders = {},
+            onEditCredentialsClick = {},
             onEmergencyContactSupportClick = {},
             onSignOutClick = {},
             onHelpSupportClick = {},

@@ -33,7 +33,8 @@ fun ContentSection(
                 onRowIconClick = tab.onRowClick,
                 placeholderRes = tab.placeholderRes,
                 tint = tab.tint,
-                rowType = tab.rowType
+                rowType = tab.rowType,
+                switchState = tab.switchState ?: false
             )
         }
     }
