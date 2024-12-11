@@ -16,6 +16,11 @@ sealed class Screen(val route: String) {
     data object Settings : Screen(route = "settings_screen")
     data object EditCredential : Screen(route = "edit_credential_screen")
     data object DeleteAccount : Screen(route = "delete_account_screen")
+    data object Username : Screen(route = "username_screen")
+    data object AboutApp : Screen(route = "about_app_screen")
+    data object HelpAndSupport : Screen(route = "help_and_support_screen")
+    data object DailyCheckIn : Screen(route = "daily_check_in_screen")
+    data object EmotionalAnalytics : Screen(route = "emotional_analytics_screen")
 
     companion object {
         fun getBottomNavRoutes(): List<String> {

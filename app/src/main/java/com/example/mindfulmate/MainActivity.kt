@@ -30,11 +30,21 @@ import com.example.mindfulmate.presentation.navigation.drawer.Drawer
 import com.example.mindfulmate.presentation.navigation.drawer.DrawerShape
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.view_model.main.MainViewModel
+import com.example.mindfulmate.presentation.work.daily_checkin.CheckInStateManager
+import com.example.mindfulmate.presentation.work.daily_checkin.NotificationPreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var checkInStateManager: CheckInStateManager
+
+    @Inject
+    lateinit var notificationPreferenceManager: NotificationPreferenceManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -47,6 +57,24 @@ class MainActivity : ComponentActivity() {
                     navController.currentBackStackEntryFlow.collectAsStateWithLifecycle(null)
                 val currentRoute = currentBackStackEntry.value?.destination?.route
                 val showBottomBar = currentRoute in getBottomNavRoutes()
+
+                val checkInPending by checkInStateManager.isCheckInForTodayPending
+                    .collectAsStateWithLifecycle(initialValue = false)
+                val notificationsEnabled by notificationPreferenceManager.isNotificationsEnabled
+                    .collectAsStateWithLifecycle(initialValue = true)
+
+                LaunchedEffect(checkInPending, notificationsEnabled) {
+                    if (notificationsEnabled && checkInPending) {
+                        navController.navigate(Screen.DailyCheckIn.route)
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    val destination = intent.getStringExtra("destination")
+                    if (destination == "daily_check_in") {
+                        navController.navigate(Screen.DailyCheckIn.route)
+                    }
+                }
 
                 BottomNavScaffold(
                     navController = navController,
