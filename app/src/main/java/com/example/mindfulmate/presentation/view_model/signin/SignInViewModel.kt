@@ -22,8 +22,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(private val userRepository: UserRepository) :
-    ViewModel() {
+class SignInViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SignInUiState> = MutableStateFlow(SignInUiState.Init)
     val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()

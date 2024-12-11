@@ -9,6 +9,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.viewModelScope
 import com.example.mindfulmate.R
 import com.example.mindfulmate.domain.repository.user.UserRepository
+import com.example.mindfulmate.presentation.view_model.main.MainViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(private val userRepository: UserRepository) :
-    ViewModel() {
+class SignUpViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState.Init)
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
