@@ -31,6 +31,7 @@ import com.example.mindfulmate.presentation.ui.screen.signin.ResetPassword
 import com.example.mindfulmate.presentation.ui.screen.signin.SignInScreen
 import com.example.mindfulmate.presentation.ui.screen.signup.SignUpScreen
 import com.example.mindfulmate.presentation.ui.screen.signup.UsernameScreen
+import com.example.mindfulmate.presentation.view_model.nav_graph.NavGraphViewModel
 
 @Composable
 fun NavGraph(
@@ -39,6 +40,8 @@ fun NavGraph(
     onMenuClick: () -> Unit,
     modifier: Modifier
 ) {
+    val navGraphViewModel: NavGraphViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -82,15 +85,13 @@ fun NavGraph(
         composable(route = Screen.Home.route) {
             HomeScreen(
                 viewModel = hiltViewModel(),
+                navGraphViewModel = navGraphViewModel,
                 onMenuClick = onMenuClick,
                 onProfileClick = { navController.navigate(Screen.Profile.route) }
             )
         }
         composable(route = Screen.Community.route) {
             CommunityScreen()
-        }
-        composable(route = Screen.Resources.route) {
-            ResourcesScreen()
         }
         composable(route = Screen.Profile.route) {
             ProfileScreen(
@@ -174,14 +175,18 @@ fun NavGraph(
         }
         composable(route = Screen.HelpAndSupport.route) {
             HelpAndSupportScreen(
-                onGoBackClick = { navController.navigate(Screen.Settings.route) }
+                viewModel = hiltViewModel(),
+                onGoBackClick = { navController.navigate(Screen.Settings.route) },
+
             )
         }
         composable(route = Screen.DailyCheckIn.route) {
             DailyCheckInScreen(
                 viewModel = hiltViewModel(),
+                chatViewModel = hiltViewModel(),
                 navigate = { navController.navigate(Screen.Home.route) },
                 onCancelClick = { navController.navigate(Screen.Home.route) },
+                onChatTrigger = { message -> navGraphViewModel.triggerBottomSheet(message) }
             )
         }
         composable(route = Screen.EmotionalAnalytics.route) {

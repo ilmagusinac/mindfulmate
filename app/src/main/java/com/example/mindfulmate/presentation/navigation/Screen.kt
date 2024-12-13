@@ -9,7 +9,6 @@ sealed class Screen(val route: String) {
     data object ResetPassword : Screen(route = "reset_password_screen")
     data object Home : Screen(route = "home_screen")
     data object Community : Screen(route = "community_screen")
-    data object Resources : Screen(route = "resources_screen")
     data object Profile : Screen(route = "profile_screen")
     data object EditProfile : Screen(route = "edit_profile_screen")
     data object Chat : Screen(route = "chat_screen")
@@ -27,7 +26,7 @@ sealed class Screen(val route: String) {
             return listOf(
                 Home.route,
                 Community.route,
-                Resources.route,
+                Chat.route,
                 Settings.route
             )
         }
