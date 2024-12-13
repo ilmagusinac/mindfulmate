@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mindfulmate.domain.usecase.daily_checkin.AddDailyCheckInUseCase
 import com.example.mindfulmate.domain.usecase.daily_checkin.GetDailyCheckInsUseCase
-import com.example.mindfulmate.presentation.util.transformChartData
 import com.example.mindfulmate.presentation.work.daily_checkin.CheckInStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -35,14 +34,28 @@ class DailyCheckInViewModel @Inject constructor(
     private val _pieChartData: MutableStateFlow<Map<String, Float>> = MutableStateFlow(emptyMap())
     val pieChartData: StateFlow<Map<String, Float>> = _pieChartData.asStateFlow()
 
-    fun addCheckIn(mood: String) {
+    private val _triggeredMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val triggeredMessage: StateFlow<String?> = _triggeredMessage.asStateFlow()
+
+    fun addCheckIn(mood: String, onChatTrigger: (String?) -> Unit) {
         viewModelScope.launch {
             try {
                 val result = addDailyCheckInUseCase(mood)
                 if (result) {
                     checkInStateManager.setCheckInCompleted()
                     _uiState.update { DailyCheckInUiState.Success }
+
+                    val message = when(mood.lowercase()){
+                        "happy" -> "Great to hear you're feeling happy! Keep up the positivity!"
+                        "sad" -> "I'm here for you. Would you like to talk about what's on your mind?"
+                        "neutral" -> "It is okay to feel like this sometimes!"
+                        else -> null
+                    }
+
+                    _triggeredMessage.emit(message)
+                    println("MESSAGE TRIGGER: ${_triggeredMessage.value}")
                     fetchCheckIns()
+                    onChatTrigger(message)
                     triggerNavigation(DailyCheckInNavigationEvent.Navigate)
                 } else {
                     _uiState.update { DailyCheckInUiState.Failure("Add check-in failed") }
@@ -58,9 +71,9 @@ class DailyCheckInViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val rawData = getDailyCheckInsUseCase()
-                _chartData.emit(rawData) // Emit raw data
+                _chartData.emit(rawData)
             } catch (e: Exception) {
-                _chartData.emit(emptyList()) // Emit empty list if there's an error
+                _chartData.emit(emptyList())
             }
         }
     }

@@ -24,8 +24,15 @@ class ChatViewModel @Inject constructor(
     private val _username = MutableStateFlow<String?>(null)
     val username: StateFlow<String?> = _username.asStateFlow()
 
+    fun addMessage(message: MessageModel) {
+        _messages.value = _messages.value + message
+        println("MESSAGE ADD: $message")
+        println("MESSAGE ADD: ${_messages.value}")
+    }
+
     fun sendMessage(userMessage: String) {
         if (userMessage.isBlank()) return
+
 
         _messages.value += MessageModel(userMessage, "user")
 

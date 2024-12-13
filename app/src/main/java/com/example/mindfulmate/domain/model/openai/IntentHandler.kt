@@ -27,11 +27,43 @@ class IntentHandler(
         // Mental Health Keywords (from mentalHealthKeywords)
         "mental_health" to mentalHealthKeywords
     )
-
+/*
     fun isMentalHealthRelated(message: String): Boolean {
         return mentalHealthKeywords.any { keyword -> message.contains(keyword, ignoreCase = true) }
     }
 
+ */
+fun isMentalHealthRelated(message: String): Boolean {
+    val tokens = message.split(" ", ".", ",", "!", "?").map { it.lowercase() }
+    val result = tokens.any { token ->
+        mentalHealthKeywords.any { keyword ->
+            token.contains(keyword, ignoreCase = true) || keyword.contains(token, ignoreCase = true)
+        }
+    }
+    println("Message: $message, Is Mental Health Related: $result")
+    return result
+}
+
+
+
+    fun detectIntentWithMessage(message: String): Pair<String?, String> {
+        val tokens = message.split(" ", ".", ",", "!", "?").map { it.lowercase() }
+        val detectedIntent = intents.entries.firstOrNull { (_, keywords) ->
+            keywords.any { keyword -> tokens.any { it.equals(keyword, ignoreCase = true) || it.contains(keyword, ignoreCase = true) } }
+        }?.key
+
+        val remainingMessage = detectedIntent?.let { intent ->
+            val keywords = intents[intent] ?: return@let message
+            keywords.fold(message) { acc, keyword ->
+                acc.replace(keyword, "", ignoreCase = true)
+            }.trim()
+        } ?: message
+
+        println("Message: $message, Detected Intent: $detectedIntent, Remaining Message: $remainingMessage")
+        return detectedIntent to remainingMessage
+    }
+
+    /*
     fun detectIntentWithMessage(message: String): Pair<String?, String> {
         val detectedIntent = intents.entries.firstOrNull { (_, keywords) ->
             keywords.any { keyword -> message.contains(keyword, ignoreCase = true) }
@@ -46,4 +78,6 @@ class IntentHandler(
 
         return detectedIntent to remainingMessage
     }
+
+     */
 }

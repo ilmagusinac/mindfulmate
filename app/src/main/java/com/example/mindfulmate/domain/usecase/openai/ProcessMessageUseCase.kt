@@ -17,6 +17,32 @@ class ProcessMessageUseCase @Inject constructor(
     suspend fun execute(userMessage: String): List<MessageModel> {
         val (detectedIntent, remainingMessage) = intentHandler.detectIntentWithMessage(userMessage)
 
+        println("User Message: $userMessage, Detected Intent: $detectedIntent, Remaining: $remainingMessage")
+
+        val messageToProcess = remainingMessage.ifBlank { userMessage }
+
+        if (!intentHandler.isMentalHealthRelated(messageToProcess)) {
+            println("Rejected Message: $messageToProcess is not mental health-related.")
+            return listOf(
+                MessageModel("Please ask a mental health-related question.", "assistant")
+            )
+        }
+
+        conversationContext.add(ChatMessage("user", messageToProcess))
+
+        val chatResponse = chatRepository.sendMessage(conversationContext)
+
+        return chatResponse?.choices?.map { choice ->
+            conversationContext.add(ChatMessage("assistant", choice.message.content))
+            MessageModel(choice.message.content, "assistant")
+        } ?: listOf(
+            MessageModel("I'm unable to process your request at the moment. Please check your connection or try again later.", "assistant")
+        )
+    }
+/*
+    suspend fun execute(userMessage: String): List<MessageModel> {
+        val (detectedIntent, remainingMessage) = intentHandler.detectIntentWithMessage(userMessage)
+
         if (remainingMessage.isBlank()) {
             val immediateResponse = when (detectedIntent) {
                 "greeting" -> "Hi! How can I assist you today?"
@@ -52,4 +78,5 @@ class ProcessMessageUseCase @Inject constructor(
             )
         )
     }
+ */
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,21 +34,34 @@ import com.example.mindfulmate.presentation.ui.screen.home.component.CommunityRo
 import com.example.mindfulmate.presentation.ui.screen.home.component.HeaderWithComponents
 import com.example.mindfulmate.presentation.util.DevicesPreview
 import com.example.mindfulmate.presentation.util.MessageModel
+import com.example.mindfulmate.presentation.view_model.nav_graph.NavGraphViewModel
 import com.example.mindfulmate.presentation.view_model.openai.ChatViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: ChatViewModel,
+    navGraphViewModel: NavGraphViewModel,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val messageList by viewModel.messages.collectAsStateWithLifecycle()
     val username by viewModel.username.collectAsStateWithLifecycle()
+    val showBottomSheet by navGraphViewModel.showBottomSheet.collectAsStateWithLifecycle()
+    val triggeredMessage by navGraphViewModel.triggeredMessage.collectAsStateWithLifecycle()
+    println("MESSAGE TRIGGER: $triggeredMessage")
+
+    LaunchedEffect(triggeredMessage) {
+        triggeredMessage?.let {
+            viewModel.addMessage(MessageModel(it, "assistant")) // Add triggered message
+            navGraphViewModel.setBottomSheetState(true, null) // Open bottom sheet
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadUser()
     }
+    println("MESSAGE LIST: $messageList")
 
     HomeScreen(
         messageList = messageList,
@@ -55,6 +69,12 @@ fun HomeScreen(
         onMessageSend = { message -> viewModel.sendMessage(message) },
         onMenuClick = onMenuClick,
         onProfileClick = onProfileClick,
+        onBottomSheetClick = {
+            navGraphViewModel.setBottomSheetState(true, null) // Trigger bottom sheet without a message
+        },
+        showBottomSheet = showBottomSheet,
+        triggeredMessage = triggeredMessage,
+        onDismissBottomSheet = { navGraphViewModel.dismissBottomSheet() },
         modifier = modifier
     )
 }
@@ -66,9 +86,13 @@ private fun HomeScreen(
     onMessageSend: (String) -> Unit,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
+    onBottomSheetClick: () -> Unit,
+    showBottomSheet: Boolean,
+    triggeredMessage: String?,
+    onDismissBottomSheet: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showBottomSheet by remember { mutableStateOf(false) }
+    //var showBottomSheet by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -121,7 +145,7 @@ private fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
             MindfulMateButton(
-                onClick = { showBottomSheet = true },
+                onClick = onBottomSheetClick,//{ showBottomSheet = true },
                 text = stringResource(id = R.string.chat_with_mate),
                 textPadding = PaddingValues(
                     horizontal = dimensionResource(id = R.dimen.padding_medium),
@@ -133,12 +157,30 @@ private fun HomeScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
         }
     }
+    /*
     MindfulMatePartialBottomSheet(
         showBottomSheet = showBottomSheet,
         onDismissRequest = { showBottomSheet = false },
         messageList = messageList,
         onMessageSend = onMessageSend
     )
+     */
+    if (showBottomSheet) {
+        MindfulMatePartialBottomSheet(
+            showBottomSheet = showBottomSheet,
+            onDismissRequest = onDismissBottomSheet,
+            messageList = messageList,
+
+            /*if (triggeredMessage != null) {
+                messageList + MessageModel(triggeredMessage, "assistant")
+            } else {
+                messageList
+            }
+            ,
+             */
+            onMessageSend = onMessageSend
+        )
+    }
 }
 
 @DevicesPreview
@@ -150,7 +192,11 @@ private fun HomeScreenPreview() {
             username = "username",
             onMessageSend = {},
             onMenuClick = {},
-            onProfileClick = {}
+            onProfileClick = {},
+            onBottomSheetClick = {},
+            showBottomSheet = true,
+            triggeredMessage = "happy",
+            onDismissBottomSheet = {},
         )
     }
 }

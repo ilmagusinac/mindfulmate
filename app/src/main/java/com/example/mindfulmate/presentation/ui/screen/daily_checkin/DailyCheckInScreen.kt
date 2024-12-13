@@ -32,15 +32,19 @@ import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.ErrorPlaceholder
 import com.example.mindfulmate.presentation.ui.component.LoadingPlaceholder
 import com.example.mindfulmate.presentation.ui.screen.daily_checkin.component.CheckInInputSection
+import com.example.mindfulmate.presentation.util.MessageModel
 import com.example.mindfulmate.presentation.view_model.daily_checkin.DailyCheckInNavigationEvent
 import com.example.mindfulmate.presentation.view_model.daily_checkin.DailyCheckInUiState
 import com.example.mindfulmate.presentation.view_model.daily_checkin.DailyCheckInViewModel
+import com.example.mindfulmate.presentation.view_model.openai.ChatViewModel
 
 @Composable
 fun DailyCheckInScreen(
     viewModel: DailyCheckInViewModel,
+    chatViewModel: ChatViewModel,
     navigate: () -> Unit,
     onCancelClick: () -> Unit,
+    onChatTrigger: (String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState: DailyCheckInUiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -49,6 +53,14 @@ fun DailyCheckInScreen(
         viewModel = viewModel,
         navigate = navigate
     )
+
+    val triggeredMessage by viewModel.triggeredMessage.collectAsStateWithLifecycle()
+
+    LaunchedEffect(triggeredMessage) {
+        triggeredMessage?.let {
+            chatViewModel.addMessage(MessageModel(message = it, role = "assistant"))
+        }
+    }
 
     when (uiState) {
         is DailyCheckInUiState.Loading -> {
@@ -62,7 +74,7 @@ fun DailyCheckInScreen(
         else -> {
             DailyCheckInScreen(
                 inputClick = { mood ->
-                    viewModel.addCheckIn(mood = mood)
+                    viewModel.addCheckIn(mood = mood, onChatTrigger = onChatTrigger)
                 },
                 onCancelClick = onCancelClick,
                 modifier = modifier

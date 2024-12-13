@@ -67,10 +67,10 @@ fun MessageList(
     }
     LazyColumn(
         modifier = modifier,
-        reverseLayout = true
+        reverseLayout = true//true
     ) {
-        items(messageList.reversed()) {
-            MessageRow(messageModel = it)
+        items(messageList.reversed()) { message ->
+            MessageRow(messageModel = message)
         }
     }
 }
