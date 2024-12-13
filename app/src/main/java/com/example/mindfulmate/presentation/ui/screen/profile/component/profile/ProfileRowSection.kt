@@ -28,7 +28,7 @@ import com.example.mindfulmate.presentation.theme.DuskyBlue
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.screen.settings.component.IconPlacement
+import com.example.mindfulmate.presentation.ui.component.MindfulMateIconPlacement
 
 @Composable
 fun ProfileRowSection(
@@ -59,7 +59,7 @@ fun ProfileRowSection(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            IconPlacement(
+            MindfulMateIconPlacement(
                 placeholderRes = placeholderRes,
                 tint = tint
             )

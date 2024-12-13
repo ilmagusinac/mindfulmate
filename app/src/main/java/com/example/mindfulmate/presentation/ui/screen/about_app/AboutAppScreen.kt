@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Blue
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
@@ -23,6 +22,7 @@ import com.example.mindfulmate.presentation.ui.screen.about_app.component.AboutA
 import com.example.mindfulmate.presentation.ui.screen.about_app.component.AboutAppInformationSection
 import com.example.mindfulmate.presentation.ui.screen.about_app.util.AboutAppContentRow
 import com.example.mindfulmate.presentation.ui.screen.about_app.util.ContentRowType
+import com.example.mindfulmate.presentation.util.DevicesPreview
 
 @Composable
 fun AboutAppScreen(
@@ -65,7 +65,8 @@ fun AboutAppScreen(
                             title = stringResource(id = R.string.application_brief_description),
                             label = stringResource(id = R.string.application_brief_description_label),
                         )
-                    )
+                    ),
+                    isDefaultExpanded = true
                 ),
                 AboutAppContentRow(
                     title = stringResource(id = R.string.team_information),
@@ -90,8 +91,10 @@ fun AboutAppScreen(
     }
 }
 
-@Preview
+@DevicesPreview
 @Composable
 private fun AboutAppScreenPreview() {
-    MindfulMateTheme { }
+    MindfulMateTheme {
+        AboutAppScreen(onGoBackClick = {})
+    }
 }

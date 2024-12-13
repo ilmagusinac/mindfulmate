@@ -59,13 +59,13 @@ fun AboutAppInformationSection(
                                 label = expandedTab.label
                             )
                         }
-                    }
+                    },
+                    isDefaultExpanded = tab.isDefaultExpanded
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun ContentRow(

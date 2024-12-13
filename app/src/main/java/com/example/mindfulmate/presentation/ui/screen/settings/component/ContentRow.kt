@@ -19,10 +19,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +36,7 @@ import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.theme.SuperLightGrey
+import com.example.mindfulmate.presentation.ui.component.MindfulMateIconPlacement
 import com.example.mindfulmate.presentation.ui.screen.settings.util.ContentRowType
 
 @Composable
@@ -66,7 +63,7 @@ fun ContentRow(
             .fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconPlacement(
+            MindfulMateIconPlacement(
                 placeholderRes = placeholderRes,
                 tint = tint
             )
@@ -119,37 +116,6 @@ fun ContentRow(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun IconPlacement(
-    modifier: Modifier = Modifier,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_profile,
-    backgroundColor: Color = DuskyGrey,
-    size: Dp = dimensionResource(id = R.dimen.icon_large),
-    tint: Color = DuskyBlue
-) {
-    Box(
-        modifier = modifier
-            .size(size)
-            .background(color = backgroundColor, shape = CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = placeholderRes),
-            contentDescription = null,
-            modifier = Modifier.size(size / 2),
-            colorFilter = ColorFilter.tint(tint)
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun IconPlacementPreview() {
-    MindfulMateTheme {
-        IconPlacement()
     }
 }
 

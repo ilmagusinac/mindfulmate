@@ -36,9 +36,10 @@ fun AboutAppRow(
     expandedContent: (@Composable () -> Unit)? = null,
     isExpandable: Boolean = true,
     modifier: Modifier = Modifier,
-    onArrowClick: () -> Unit = {}
+    onArrowClick: () -> Unit = {},
+    isDefaultExpanded: Boolean = false
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(isDefaultExpanded) }
 
     Box(
         modifier = modifier

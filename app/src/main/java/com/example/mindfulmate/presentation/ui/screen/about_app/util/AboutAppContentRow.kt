@@ -11,4 +11,5 @@ data class AboutAppContentRow(
     @DrawableRes val placeholderRes: Int = R.drawable.ic_profile,
     val tint: Color = Color.Gray,
     val onArrowClick: () -> Unit = {},
+    val isDefaultExpanded: Boolean = false
 )
