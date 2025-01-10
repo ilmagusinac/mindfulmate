@@ -1,18 +1,16 @@
 package com.example.mindfulmate.presentation.ui.screen.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,15 +23,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mindfulmate.R
-import com.example.mindfulmate.presentation.theme.DuskyWhite
+import com.example.mindfulmate.presentation.theme.DuskyGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.component.MindfulMateButton
+import com.example.mindfulmate.presentation.ui.component.MindfulMateFloatingActionButton
 import com.example.mindfulmate.presentation.ui.component.MindfulMatePartialBottomSheet
+import com.example.mindfulmate.presentation.ui.component.MindfulMateSearchField
+import com.example.mindfulmate.presentation.ui.component.util.SearchItem
+import com.example.mindfulmate.presentation.ui.screen.community.util.CommunitySectionParams
+import com.example.mindfulmate.presentation.ui.screen.community.util.TopCommunityProfile
 import com.example.mindfulmate.presentation.ui.screen.home.util.Community
 import com.example.mindfulmate.presentation.ui.screen.home.component.CommunityRow
 import com.example.mindfulmate.presentation.ui.screen.home.component.HeaderWithComponents
 import com.example.mindfulmate.presentation.util.DevicesPreview
 import com.example.mindfulmate.presentation.util.MessageModel
+import com.example.mindfulmate.presentation.view_model.community.community_home.CommunityHomeViewModel
 import com.example.mindfulmate.presentation.view_model.nav_graph.NavGraphViewModel
 import com.example.mindfulmate.presentation.view_model.openai.ChatViewModel
 
@@ -41,40 +44,55 @@ import com.example.mindfulmate.presentation.view_model.openai.ChatViewModel
 fun HomeScreen(
     viewModel: ChatViewModel,
     navGraphViewModel: NavGraphViewModel,
+    communityViewModel: CommunityHomeViewModel,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
+    onCommunityClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val messageList by viewModel.messages.collectAsStateWithLifecycle()
     val username by viewModel.username.collectAsStateWithLifecycle()
     val showBottomSheet by navGraphViewModel.showBottomSheet.collectAsStateWithLifecycle()
     val triggeredMessage by navGraphViewModel.triggeredMessage.collectAsStateWithLifecycle()
-    println("MESSAGE TRIGGER: $triggeredMessage")
+    val topCommunities by communityViewModel.topCommunitiesRow.collectAsStateWithLifecycle()
+    val userCommunities by communityViewModel.userCommunitiesRow.collectAsStateWithLifecycle()
+    val searchCommunities by communityViewModel.searchCommunities.collectAsStateWithLifecycle()
+    var textState by remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(triggeredMessage) {
         triggeredMessage?.let {
-            viewModel.addMessage(MessageModel(it, "assistant")) // Add triggered message
-            navGraphViewModel.setBottomSheetState(true, null) // Open bottom sheet
+            viewModel.addMessage(MessageModel(it, "assistant"))
+            navGraphViewModel.setBottomSheetState(true, null)
         }
     }
 
     LaunchedEffect(Unit) {
         viewModel.loadUser()
+        communityViewModel.fetchTopCommunities(onCommunityClick)
+        communityViewModel.getUserCommunities(onCommunityClick)
+        communityViewModel.fetchCommunitiesSearch()
     }
-    println("MESSAGE LIST: $messageList")
 
     HomeScreen(
         messageList = messageList,
         username = username ?: "user",
+        topCommunities = topCommunities,
+        myCommunities = userCommunities,
         onMessageSend = { message -> viewModel.sendMessage(message) },
         onMenuClick = onMenuClick,
         onProfileClick = onProfileClick,
         onBottomSheetClick = {
-            navGraphViewModel.setBottomSheetState(true, null) // Trigger bottom sheet without a message
+            navGraphViewModel.setBottomSheetState(
+                true,
+                null
+            )
         },
         showBottomSheet = showBottomSheet,
-        triggeredMessage = triggeredMessage,
         onDismissBottomSheet = { navGraphViewModel.dismissBottomSheet() },
+        communities = textState,
+        onSearchCommunitiesChange = { textState = it},
+        onSearchItemClick = {},
+        allSearchItems = searchCommunities,
         modifier = modifier
     )
 }
@@ -83,101 +101,68 @@ fun HomeScreen(
 private fun HomeScreen(
     messageList: List<MessageModel>,
     username: String,
+    topCommunities: List<CommunitySectionParams>,
+    myCommunities: List<CommunitySectionParams>,
+    communities: TextFieldValue,
+    onSearchCommunitiesChange: (TextFieldValue) -> Unit,
+    allSearchItems: List<SearchItem>,
     onMessageSend: (String) -> Unit,
+    onSearchItemClick: (SearchItem) -> Unit,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
     onBottomSheetClick: () -> Unit,
     showBottomSheet: Boolean,
-    triggeredMessage: String?,
     onDismissBottomSheet: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    //var showBottomSheet by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        var textState by remember { mutableStateOf(TextFieldValue("")) }
-        val sampleCommunities = listOf(
-            Community(
-                title = "Anxiety Management",
-                membersCount = "23,600",
-                backgroundImage = R.drawable.ic_splash,
-                logo = R.drawable.ic_google
-            ),
-            Community(
-                title = "Stress Relief",
-                membersCount = "7,600",
-                backgroundImage = R.drawable.ic_launcher_background,
-                logo = R.drawable.ic_heart
-            ),
-            Community(
-                title = "Mindfulness",
-                membersCount = "18,200",
-                backgroundImage = R.drawable.ic_splash,
-                logo = R.drawable.ic_resources
-            )
-        )
-
-        HeaderWithComponents(
-            username = username,
-            searchFieldValue = textState,
-            onSearchFieldValueChange = { textState = it },
-            onMenuClick = onMenuClick,
-            onProfileClick = onProfileClick
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_default))
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            CommunityRow(
-                title = "Top Communities",
-                communities = sampleCommunities
+            HeaderWithComponents(
+                username = username,
+                communities = communities,
+                allSearchItems = allSearchItems,
+                onSearchCommunitiesChange = onSearchCommunitiesChange,
+                onMenuClick = onMenuClick,
+                onProfileClick = onProfileClick,
+                onSearchItemClick = onSearchItemClick
+
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
-            CommunityRow(
-                title = "Your Communities",
-                communities = sampleCommunities
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
-            MindfulMateButton(
-                onClick = onBottomSheetClick,//{ showBottomSheet = true },
-                text = stringResource(id = R.string.chat_with_mate),
-                textPadding = PaddingValues(
-                    horizontal = dimensionResource(id = R.dimen.padding_medium),
-                    vertical = dimensionResource(id = R.dimen.padding_xsmall)
-                ),
-                textStyle = MaterialTheme.typography.labelSmall.copy(color = DuskyWhite),
-                leadingIcon = painterResource(id = R.drawable.ic_chat)
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+            Column(
+                //horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_default))
+            ) {
+                CommunityRow(
+                    title = "Top Communities",
+                    communities = topCommunities
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+                CommunityRow(
+                    title = "Your Communities",
+                    communities = myCommunities
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+            }
         }
+
+        MindfulMateFloatingActionButton(
+            text = stringResource(id = R.string.chat_with_mate),
+            onClick = onBottomSheetClick,
+            leadingIcon = painterResource(id = R.drawable.ic_chat),
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+
     }
-    /*
-    MindfulMatePartialBottomSheet(
-        showBottomSheet = showBottomSheet,
-        onDismissRequest = { showBottomSheet = false },
-        messageList = messageList,
-        onMessageSend = onMessageSend
-    )
-     */
     if (showBottomSheet) {
         MindfulMatePartialBottomSheet(
             showBottomSheet = showBottomSheet,
             onDismissRequest = onDismissBottomSheet,
             messageList = messageList,
-
-            /*if (triggeredMessage != null) {
-                messageList + MessageModel(triggeredMessage, "assistant")
-            } else {
-                messageList
-            }
-            ,
-             */
             onMessageSend = onMessageSend
         )
     }
@@ -195,8 +180,13 @@ private fun HomeScreenPreview() {
             onProfileClick = {},
             onBottomSheetClick = {},
             showBottomSheet = true,
-            triggeredMessage = "happy",
             onDismissBottomSheet = {},
+            topCommunities = emptyList(),
+            myCommunities = emptyList(),
+            allSearchItems = emptyList(),
+            onSearchItemClick = {},
+            onSearchCommunitiesChange = {},
+            communities = TextFieldValue()
         )
     }
 }

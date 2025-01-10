@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,8 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import com.example.mindfulmate.R
-import com.example.mindfulmate.presentation.theme.Blue
-import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 
 @Composable
@@ -64,27 +60,6 @@ fun MindfulMateSwipeableComposableContent(
             lazyListState.animateScrollToItem(currentPage)
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_medium)))
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            repeat(contents.size) { index ->
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .background(
-                            color = if (index == currentPage) Blue else LightGrey,
-                            shape = CircleShape
-                        )
-                )
-                if (index < contents.size - 1) {
-                    Spacer(modifier = Modifier.width(8.dp)) // Fixed spacing
-                }
-            }
-        }
     }
 }
 

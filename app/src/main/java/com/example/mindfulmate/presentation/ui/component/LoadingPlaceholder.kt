@@ -61,7 +61,7 @@ fun LoadingPlaceholder(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun CircularProgressIndicatorIcon(modifier: Modifier = Modifier) {
+fun CircularProgressIndicatorIcon(modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition()
     val rotation by infiniteTransition.animateFloat(
         initialValue = 0f,

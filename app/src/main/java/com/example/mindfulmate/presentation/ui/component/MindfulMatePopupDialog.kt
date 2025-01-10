@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,61 +40,67 @@ fun MindfulMatePopupDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Popup(onDismissRequest = onDismissRequest) {
-        Box(
-            modifier = modifier
-                .shadow(
-                    elevation = dimensionResource(id = R.dimen.elevation_medium),
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)),
-                    clip = false
-                )
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)))
-                .background(Color.White)
-                .padding(dimensionResource(id = R.dimen.padding_medium))
-                .fillMaxWidth()
+    Column(modifier = modifier.fillMaxSize()
+    ) {
+        Popup(
+            alignment = Alignment.Center,
+            onDismissRequest = onDismissRequest
         ) {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+                    .shadow(
+                        elevation = dimensionResource(id = R.dimen.elevation_medium),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)),
+                        clip = false
+                    )
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)))
+                    .background(Color.White)
+                    .padding(dimensionResource(id = R.dimen.padding_medium))
             ) {
-                Text(
-                    text = dialogTitle,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = Grey,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 20.sp
-                    )
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_medium)))
-                Text(
-                    text = dialogText,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Grey,
-                        lineHeight = 20.sp
-                    )
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacing_small)),
-                    modifier = Modifier.fillMaxWidth()
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
                 ) {
-                    buttons.forEach { buttonConfig ->
-                        MindfulMateButton(
-                            text = buttonConfig.text,
-                            onClick = buttonConfig.onConfirmationClick,
-                            containerColor = if (buttonConfig.isPrimary) Blue else Color.Transparent,
-                            contentColor = if (buttonConfig.isPrimary) DuskyWhite else Color.Transparent,
-                            disabledContainerColor = if (buttonConfig.isPrimary) Blue else Color.Transparent,
-                            disabledContentColor = if (buttonConfig.isPrimary) DuskyWhite else Color.Transparent,
-                            borderColor = if (buttonConfig.isPrimary) Blue else Grey,
-                            textColor = if (buttonConfig.isPrimary) DuskyWhite else Grey,
-                            textPadding = PaddingValues(
-                                horizontal = dimensionResource(id = R.dimen.padding_small),
-                                vertical = dimensionResource(id = R.dimen.padding_xsmall)
-                            ),
-                            modifier = Modifier.weight(1f)
+                    Text(
+                        text = dialogTitle,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = Grey,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 20.sp
                         )
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_medium)))
+                    Text(
+                        text = dialogText,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Grey,
+                            lineHeight = 20.sp
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacing_small)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        buttons.forEach { buttonConfig ->
+                            MindfulMateButton(
+                                text = buttonConfig.text,
+                                onClick = buttonConfig.onConfirmationClick,
+                                containerColor = if (buttonConfig.isPrimary) Blue else Color.Transparent,
+                                contentColor = if (buttonConfig.isPrimary) DuskyWhite else Color.Transparent,
+                                disabledContainerColor = if (buttonConfig.isPrimary) Blue else Color.Transparent,
+                                disabledContentColor = if (buttonConfig.isPrimary) DuskyWhite else Color.Transparent,
+                                borderColor = if (buttonConfig.isPrimary) Blue else Grey,
+                                textColor = if (buttonConfig.isPrimary) DuskyWhite else Grey,
+                                textPadding = PaddingValues(
+                                    horizontal = dimensionResource(id = R.dimen.padding_small),
+                                    vertical = dimensionResource(id = R.dimen.padding_xsmall)
+                                ),
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                 }
             }

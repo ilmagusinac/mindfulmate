@@ -17,7 +17,6 @@ class HelpAndSupportServiceImpl @Inject constructor(
 
 
         return faqCollection.documents.map { document ->
-            val rawQuestions = document.get("questions")
             val title = document.getString("title") ?: "Untitled Section"
             val questions = document.get("questions") as? List<Map<String, String>> ?: emptyList()
             val mappedQuestions = questions.map { question ->

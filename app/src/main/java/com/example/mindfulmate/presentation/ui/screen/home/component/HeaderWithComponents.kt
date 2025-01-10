@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -35,15 +36,18 @@ import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 import com.example.mindfulmate.presentation.ui.component.MindfulMateSearchField
+import com.example.mindfulmate.presentation.ui.component.util.SearchItem
 import com.example.mindfulmate.presentation.util.innerShadow
 
 @Composable
 fun HeaderWithComponents(
     username: String,
-    searchFieldValue: TextFieldValue,
-    onSearchFieldValueChange: (TextFieldValue) -> Unit,
+    communities: TextFieldValue,
+    allSearchItems: List<SearchItem>,
+    onSearchCommunitiesChange: (TextFieldValue) -> Unit,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
+    onSearchItemClick: (SearchItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -89,14 +93,18 @@ fun HeaderWithComponents(
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxmedium)))
+            //SEARCH BAR
             MindfulMateSearchField(
-                text = searchFieldValue,
+                text = communities,
                 placeholder = stringResource(id = R.string.search_text_field_placeholder),
-                onTextValueChange = onSearchFieldValueChange
+                allSearchItems = allSearchItems,
+                onTextValueChange = onSearchCommunitiesChange,
+                onSearchItemClick = onSearchItemClick
             )
         }
     }
 }
+
 
 @Composable
 fun BackgroundHeader(
@@ -130,13 +138,25 @@ private fun BackgroundHeaderPreview() {
 private fun HeaderPreview() {
     MindfulMateTheme {
         var textState by remember { mutableStateOf(TextFieldValue("")) }
-
-        HeaderWithComponents(
-            username = "username",
-            searchFieldValue = textState,
-            onSearchFieldValueChange = { textState = it },
-            onMenuClick = {},
-            onProfileClick = {}
+        val searchItems = listOf(
+            SearchItem("123", "JohnDoe", R.drawable.ic_profile),
+            SearchItem("123", "JaneDoe", R.drawable.ic_profile),
+            SearchItem("123", "OtherUser", R.drawable.ic_profile),
+            SearchItem("123", "SampleUser", R.drawable.ic_profile),
+            SearchItem("123", "AnotherUser", R.drawable.ic_profile)
         )
+        Box {
+            Column(modifier = Modifier.fillMaxSize()) {
+                HeaderWithComponents(
+                    username = "username",
+                    communities = textState,
+                    allSearchItems = searchItems,
+                    onSearchCommunitiesChange = { textState = it },
+                    onMenuClick = {},
+                    onProfileClick = {},
+                    onSearchItemClick = {}
+                )
+            }
+        }
     }
 }

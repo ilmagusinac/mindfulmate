@@ -23,6 +23,7 @@ import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.ErrorPlaceholder
 import com.example.mindfulmate.presentation.ui.component.LoadingPlaceholder
+import com.example.mindfulmate.presentation.ui.component.MindfulMateMainHeaderSection
 import com.example.mindfulmate.presentation.ui.screen.settings.util.ContentRow
 import com.example.mindfulmate.presentation.ui.screen.settings.component.ContentSection
 import com.example.mindfulmate.presentation.ui.screen.settings.component.ProfileTab
@@ -123,12 +124,9 @@ private fun SettingsScreen(
             )
             .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = stringResource(id = R.string.profile),
-            style = MaterialTheme.typography.titleLarge.copy(
-                color = Grey,
-                fontSize = 20.sp
-            )
+        MindfulMateMainHeaderSection(
+            iconRes = R.drawable.ic_profile,
+            title = stringResource(id = R.string.profile)
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
         ProfileTab(

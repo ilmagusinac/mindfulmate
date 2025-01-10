@@ -18,8 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.screen.chat.component.MessageInputField
-import com.example.mindfulmate.presentation.ui.screen.chat.component.MessageList
+import com.example.mindfulmate.presentation.ui.screen.chat.component.chat_mate.MessageList
+import com.example.mindfulmate.presentation.ui.screen.chat.component.chat_mate.ChatMateHeader
 import com.example.mindfulmate.presentation.util.MessageModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +41,7 @@ fun MindfulMatePartialBottomSheet(
             containerColor = DuskyWhite
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
+                ChatMateHeader()
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -49,12 +50,10 @@ fun MindfulMatePartialBottomSheet(
                 ) {
                     MessageList(
                         messageList = messageList,
-                        modifier = Modifier.fillMaxSize(),
-                        showBackButton = false
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
-
-                MessageInputField(
+                MindfulMateMessageInputField(
                     onMessageSend = { message -> onMessageSend(message) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -70,9 +69,15 @@ private fun MindfulMatePartialBottomSheetPreview() {
         val sampleMessages = listOf(
             MessageModel(message = "Hello! How can I assist you?", role = "model"),
             MessageModel(message = "I'm working on an AI project.", role = "user"),
-            MessageModel(message = "That's amazing! How can I help?", role = "model")
+            MessageModel(message = "That's amazing! How can I help?", role = "model"),
+            MessageModel(message = "That's amazing! How can I help?", role = "model"),
+            MessageModel(message = "That's amazing! How can I help?", role = "model"),
+            MessageModel(message = "That's amazing! How can I help?", role = "model"),
+            MessageModel(
+                message = "That's amazing! How can I helbhfrjjjjfrbrhbrhbrbrbrfhrfhbrfbhrfbhrfhbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbp?",
+                role = "model"
+            )
         )
-
         var showBottomSheet by remember { mutableStateOf(true) }
 
         MindfulMatePartialBottomSheet(
