@@ -26,4 +26,3 @@ abstract class DailyCheckInModule {
         dailyCheckInServiceImpl: DailyCheckInServiceImpl
     ): DailyCheckInService
 }
-

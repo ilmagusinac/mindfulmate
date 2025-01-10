@@ -1,7 +1,6 @@
 package com.example.mindfulmate.data.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
 import com.example.mindfulmate.presentation.work.daily_checkin.CheckInStateManager
 import com.example.mindfulmate.presentation.work.daily_checkin.NotificationPreferenceManager
 import dagger.Module
@@ -9,7 +8,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.util.prefs.Preferences
 import javax.inject.Singleton
 
 @Module
