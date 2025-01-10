@@ -3,6 +3,7 @@ package com.example.mindfulmate.presentation.ui.screen.home.component
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,12 +42,12 @@ import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.screen.home.util.Community
+import com.example.mindfulmate.presentation.ui.screen.community.util.CommunitySectionParams
 
 @Composable
 fun CommunityRow(
     title: String,
-    communities: List<Community>,
+    communities: List<CommunitySectionParams>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -57,14 +59,30 @@ fun CommunityRow(
             ),
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_xsmall))
         )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacing_xdefault))) {
-            items(communities) { community ->
-                CommunityCard(
-                    title = community.title,
-                    membersCount = community.membersCount,
-                    backgroundImage = community.backgroundImage,
-                    logo = community.logo
-                )
+        if(communities.isEmpty()){
+            Text(
+                text = stringResource(id = R.string.no_communities),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = Grey,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.W300,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_xxlarge)))
+        } else {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacing_xdefault))) {
+                items(communities) { community ->
+                    CommunityCard(
+                        title = community.title,
+                        membersCount = community.membersCount,
+                        backgroundImage = community.imageRes,
+                        logo = community.imageRes,
+                        communityId = community.communityId,
+                        onCommunityCardClick = community.onViewCommunityClick
+                    )
+                }
             }
         }
     }
@@ -74,8 +92,10 @@ fun CommunityRow(
 fun CommunityCard(
     title: String,
     membersCount: String,
+    communityId: String,
     @DrawableRes backgroundImage: Int,
     @DrawableRes logo: Int,
+    onCommunityCardClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -89,6 +109,7 @@ fun CommunityCard(
             )
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners_small)))
             .background(Color.White)
+            .clickable { onCommunityCardClick(communityId) }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -156,7 +177,9 @@ fun CommunityCardPreview() {
             title = "Anxiety Management",
             membersCount = "23,600",
             backgroundImage = R.drawable.ic_resources,
-            logo = R.drawable.ic_heart
+            logo = R.drawable.ic_heart,
+            onCommunityCardClick = {},
+            communityId = ""
         )
     }
 }
@@ -164,30 +187,9 @@ fun CommunityCardPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CommunityRowPreview() {
-    val sampleCommunities = listOf(
-        Community(
-            title = "Anxiety Management 123",
-            membersCount = "23,600",
-            backgroundImage = R.drawable.ic_splash,
-            logo = R.drawable.ic_google
-        ),
-        Community(
-            title = "Stress Relief",
-            membersCount = "7,600",
-            backgroundImage = R.drawable.ic_launcher_background,
-            logo = R.drawable.ic_heart
-        ),
-        Community(
-            title = "Mindfulness",
-            membersCount = "18,200",
-            backgroundImage = R.drawable.ic_splash,
-            logo = R.drawable.ic_resources
-        )
-    )
-
     MindfulMateTheme {
         CommunityRow(
-            communities = sampleCommunities,
+            communities = emptyList(),
             title = "Top Communities"
         )
     }
