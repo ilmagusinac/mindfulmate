@@ -28,14 +28,12 @@ import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 
 @Composable
 fun Drawer(
-    username: String,
     onSignOutButtonClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onPrivacyAndPolicyClick: () -> Unit,
+    onHelpAndSupportClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -70,29 +68,17 @@ fun Drawer(
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xlarge)))
             DrawerRow(
                 icon = R.drawable.ic_settings,
-                title = stringResource(id = R.string.settings_management),
+                title = stringResource(id = R.string.profile_management),
                 onDrawerRowClick = onSettingsClick
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
             DrawerRow(
                 icon = R.drawable.ic_privacy_policy,
-                title = stringResource(id = R.string.privacy_and_policy),
-                onDrawerRowClick = onPrivacyAndPolicyClick
+                title = stringResource(id = R.string.help_support_title),
+                onDrawerRowClick = onHelpAndSupportClick
             )
             Spacer(modifier = Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MindfulMateProfileImage(
-                    imageUrl = null,
-                    placeholderRes = R.drawable.ic_profile
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_xdefault)))
-                Text(
-                    text = "@$username",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        color = Grey,
-                        fontSize = 16.sp
-                    )
-                )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = onSignOutButtonClick) {
                     Icon(
@@ -153,10 +139,9 @@ private fun DrawerRowPreview() {
 private fun DrawerPreview() {
     MindfulMateTheme {
         Drawer(
-            username = "username",
             onSignOutButtonClick = {},
             onSettingsClick = {},
-            onPrivacyAndPolicyClick = {}
+            onHelpAndSupportClick = {}
         )
     }
 }

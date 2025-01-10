@@ -13,12 +13,12 @@ object BottomBarNavigationItems {
         BottomBarNavigationItem(
             titleId = R.string.community,
             iconRes = R.drawable.ic_community,
-            route = Screen.Community.route
+            route = Screen.CommunityHome.route
         ),
         BottomBarNavigationItem(
             titleId = R.string.chat,
             iconRes = R.drawable.ic_chat,
-            route = Screen.Chat.route
+            route = Screen.ChatHome.route
         ),
         BottomBarNavigationItem(
             titleId = R.string.profile,

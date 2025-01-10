@@ -9,14 +9,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import com.example.mindfulmate.presentation.ui.screen.welcome.WelcomeScreen
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.mindfulmate.presentation.ui.component.ErrorPlaceholder
 import com.example.mindfulmate.presentation.ui.component.LoadingPlaceholder
 import com.example.mindfulmate.presentation.ui.screen.about_app.AboutAppScreen
+import com.example.mindfulmate.presentation.ui.screen.chat.ChatHomeScreen
 import com.example.mindfulmate.presentation.ui.screen.chat.ChatScreen
+import com.example.mindfulmate.presentation.ui.screen.community.CommunityHomeScreen
+import com.example.mindfulmate.presentation.ui.screen.community.CommunityPostScreen
 import com.example.mindfulmate.presentation.ui.screen.community.CommunityScreen
+import com.example.mindfulmate.presentation.ui.screen.community.CommunityWritePostScreen
 import com.example.mindfulmate.presentation.ui.screen.daily_checkin.DailyCheckInScreen
 import com.example.mindfulmate.presentation.ui.screen.emotional_analytics.MoodAnalyticsScreen
 import com.example.mindfulmate.presentation.ui.screen.help_support.HelpAndSupportScreen
@@ -25,12 +31,12 @@ import com.example.mindfulmate.presentation.ui.screen.profile.DeleteAccountScree
 import com.example.mindfulmate.presentation.ui.screen.profile.EditCredentialScreen
 import com.example.mindfulmate.presentation.ui.screen.profile.EditProfileScreen
 import com.example.mindfulmate.presentation.ui.screen.profile.ProfileScreen
-import com.example.mindfulmate.presentation.ui.screen.resources.ResourcesScreen
 import com.example.mindfulmate.presentation.ui.screen.settings.SettingsScreen
 import com.example.mindfulmate.presentation.ui.screen.signin.ResetPassword
 import com.example.mindfulmate.presentation.ui.screen.signin.SignInScreen
 import com.example.mindfulmate.presentation.ui.screen.signup.SignUpScreen
 import com.example.mindfulmate.presentation.ui.screen.signup.UsernameScreen
+import com.example.mindfulmate.presentation.view_model.community.community_home.CommunityHomeViewModel
 import com.example.mindfulmate.presentation.view_model.nav_graph.NavGraphViewModel
 
 @Composable
@@ -41,6 +47,7 @@ fun NavGraph(
     modifier: Modifier
 ) {
     val navGraphViewModel: NavGraphViewModel = hiltViewModel()
+    val communitiesViewModel: CommunityHomeViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -86,13 +93,23 @@ fun NavGraph(
             HomeScreen(
                 viewModel = hiltViewModel(),
                 navGraphViewModel = navGraphViewModel,
+                communityViewModel = communitiesViewModel,
                 onMenuClick = onMenuClick,
-                onProfileClick = { navController.navigate(Screen.Profile.route) }
+                onProfileClick = { navController.navigate(Screen.Profile.route) },
+                onCommunityClick = { communityId ->
+                    navController.navigate(Screen.Community.createRoute(communityId))
+                }
             )
         }
-        composable(route = Screen.Community.route) {
-            CommunityScreen()
+        composable(route = Screen.CommunityHome.route) {
+            CommunityHomeScreen(
+                viewModel = hiltViewModel(),
+                onCommunityClick = { communityId ->
+                    navController.navigate(Screen.Community.createRoute(communityId))
+                }
+            )
         }
+
         composable(route = Screen.Profile.route) {
             ProfileScreen(
                 viewModel = hiltViewModel(),
@@ -115,8 +132,17 @@ fun NavGraph(
         composable(route = Screen.Error.route) {
             ErrorPlaceholder(onConfirmationClick = {})
         }
-        composable(route = Screen.Chat.route) {
-            ChatScreen()
+        composable(
+            route = Screen.Chat("{chatId}").route
+        ) { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId") ?: throw IllegalArgumentException("Chat ID is missing")
+
+            ChatScreen(
+                viewModel = hiltViewModel(),
+                chatId = chatId,
+                onGoBackClick = { navController.navigate(Screen.ChatHome.route) },
+                navigate = { navController.navigate(Screen.ChatHome.route) }
+            )
         }
         composable(route = Screen.Settings.route) {
             SettingsScreen(
@@ -192,7 +218,59 @@ fun NavGraph(
         composable(route = Screen.EmotionalAnalytics.route) {
             MoodAnalyticsScreen(
                 viewModel = hiltViewModel(),
-                onGoBackClick = { navController.navigate(Screen.Profile.route) }
+                onGoBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = Screen.ChatHome.route) {
+            ChatHomeScreen(
+                viewModel = hiltViewModel(),
+                onChatClicked = { chatId ->
+                    navController.navigate(Screen.Chat.createRoute(chatId))
+                }
+            )
+        }
+        composable(route = Screen.Community("{communityId}").route) { backStackEntry ->
+            val communityId = backStackEntry.arguments?.getString("communityId")
+                ?: throw IllegalArgumentException("Community ID is required")
+            CommunityScreen(
+                viewModel = hiltViewModel(),
+                communityId = communityId,
+                onBackButtonClick = { navController.popBackStack() },
+                onNewPostClick = { navController.navigate(Screen.WritePost.createRoute(communityId)) },
+                onNavigateToPost = { communityId, postId ->
+                    navController.navigate(Screen.CommunityPost.createRoute(communityId, postId))
+                }
+            )
+        }
+        composable(
+            route = Screen.CommunityPost("{communityId}", "{postId}").route,
+            arguments = listOf(
+                navArgument("communityId") { type = NavType.StringType },
+                navArgument("postId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val communityId = backStackEntry.arguments?.getString("communityId")
+                ?: throw IllegalArgumentException("Community ID is required")
+            val postId = backStackEntry.arguments?.getString("postId")
+                ?: throw IllegalArgumentException("Post ID is required")
+
+            CommunityPostScreen(
+                viewModel = hiltViewModel(),
+                communityId = communityId,
+                postId = postId,
+                onGoBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route = Screen.WritePost("{communityId}").route,
+            arguments = listOf(navArgument("communityId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val communityId = backStackEntry.arguments?.getString("communityId") ?: return@composable
+            CommunityWritePostScreen(
+                viewModel = hiltViewModel(),
+                communityId = communityId,
+                onCloseClick = { navController.popBackStack() },
+                navigate = { navController.popBackStack() }
             )
         }
     }

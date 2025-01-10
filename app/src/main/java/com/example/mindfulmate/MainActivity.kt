@@ -58,17 +58,6 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = currentBackStackEntry.value?.destination?.route
                 val showBottomBar = currentRoute in getBottomNavRoutes()
 
-                val checkInPending by checkInStateManager.isCheckInForTodayPending
-                    .collectAsStateWithLifecycle(initialValue = false)
-                val notificationsEnabled by notificationPreferenceManager.isNotificationsEnabled
-                    .collectAsStateWithLifecycle(initialValue = true)
-
-                LaunchedEffect(checkInPending, notificationsEnabled) {
-                    if (notificationsEnabled && checkInPending) {
-                        navController.navigate(Screen.DailyCheckIn.route)
-                    }
-                }
-
                 LaunchedEffect(Unit) {
                     val destination = intent.getStringExtra("destination")
                     if (destination == "daily_check_in") {
@@ -114,7 +103,6 @@ fun BottomNavScaffold(
                 drawerShape = DrawerShape(0.dp, 0.97f),
                 content = {
                     Drawer(
-                        username = username ?: "user",
                         onSignOutButtonClick = {
                             mainViewModel.signOut()
                             scope.launch { drawerState.close() }
@@ -127,9 +115,9 @@ fun BottomNavScaffold(
                             scope.launch { drawerState.close() }
                             navController.navigate(Screen.Settings.route)
                         },
-                        onPrivacyAndPolicyClick = {
+                        onHelpAndSupportClick = {
                             scope.launch { drawerState.close() }
-                            navController.navigate(Screen.Settings.route)
+                            navController.navigate(Screen.HelpAndSupport.route)
                         }
                     )
                 }
