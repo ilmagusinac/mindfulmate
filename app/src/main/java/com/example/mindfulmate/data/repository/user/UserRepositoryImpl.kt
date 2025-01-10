@@ -36,4 +36,6 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun deleteUser() = userService.deleteUser()
     override suspend fun updateEmail(email: String, password: String, newEmail: String) =
         accountService.updateEmail(email, password, newEmail)
+
+    override suspend fun getAllUsers(): List<Pair<String, String>> = userService.getAllUsers()
 }

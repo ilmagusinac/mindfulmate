@@ -7,4 +7,5 @@ interface UserService {
     suspend fun getUser(): User
     suspend fun updateUser(user: User)
     suspend fun deleteUser()
+    suspend fun getAllUsers(): List<Pair<String, String>>
 }

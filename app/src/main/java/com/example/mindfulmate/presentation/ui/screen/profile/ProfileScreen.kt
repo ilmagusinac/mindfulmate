@@ -27,6 +27,9 @@ import com.example.mindfulmate.presentation.ui.screen.profile.util.ProfileInform
 import com.example.mindfulmate.presentation.ui.screen.profile.util.ProfileParams
 import com.example.mindfulmate.presentation.view_model.profile.ProfileUiState
 import com.example.mindfulmate.presentation.view_model.profile.ProfileViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -38,6 +41,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState: ProfileUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val lastDailyCheckIn by viewModel.lastDailyCheckIn.collectAsStateWithLifecycle()
 
     when (uiState) {
         is ProfileUiState.Loading -> {
@@ -55,6 +59,7 @@ fun ProfileScreen(
                 onDailyInputClick = onDailyInputClick,
                 onGoBackClick = onGoBackClick,
                 onEditProfileClick = onEditProfileClick,
+                lastDailyCheckIn = lastDailyCheckIn,
                 modifier = modifier
             )
         }
@@ -68,12 +73,16 @@ fun ProfileScreen(
 @Composable
 private fun ProfileScreen(
     profileParams: ProfileParams,
+    lastDailyCheckIn: String?,
     onEmotionalAnalyticsClick: () -> Unit,
     onDailyInputClick: () -> Unit,
     onGoBackClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    val isDailyInputEnabled = lastDailyCheckIn != currentDate
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -121,17 +130,18 @@ private fun ProfileScreen(
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
         ProfileRowSection(
+            title = stringResource(id = R.string.daily_input_optional_title),
+            label = stringResource(id = R.string.daily_input_optional_label),
+            placeholderRes = R.drawable.ic_heart,
+            onRowClick = onDailyInputClick,
+            isEnabled = isDailyInputEnabled
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+        ProfileRowSection(
             title = stringResource(id = R.string.get_emotional_analytics_title),
             label = stringResource(id = R.string.get_emotional_analytics_label),
             placeholderRes = R.drawable.ic_analytics,
             onRowClick = onEmotionalAnalyticsClick
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
-        ProfileRowSection(
-            title = stringResource(id = R.string.daily_input_optional_title),
-            label = stringResource(id = R.string.daily_input_optional_label),
-            placeholderRes = R.drawable.ic_heart,
-            onRowClick = onDailyInputClick
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
     }
@@ -149,6 +159,7 @@ private fun ProfileScreenPreview() {
                 email = "username@gmail.com",
                 number = "+387 123 456",
             ),
+            lastDailyCheckIn = "",
             onEmotionalAnalyticsClick = {},
             onDailyInputClick = {},
             onGoBackClick = {},

@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.DuskyBlue
+import com.example.mindfulmate.presentation.theme.DuskyGrey
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
@@ -37,19 +38,33 @@ fun ProfileRowSection(
     onRowClick: () -> Unit,
     modifier: Modifier = Modifier,
     @DrawableRes placeholderRes: Int = R.drawable.ic_profile,
-    tint: Color = DuskyBlue
+    tint: Color = DuskyBlue,
+    isEnabled: Boolean = true
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
+            /*
             .shadow(
                 elevation = dimensionResource(id = R.dimen.elevation_medium),
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners_small)),
                 clip = false
+            )*/
+            .then(
+                if (isEnabled) {
+                    Modifier.shadow(
+                        elevation = dimensionResource(id = R.dimen.elevation_medium),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners_small)),
+                        clip = false
+                    )
+                } else {
+                    Modifier
+                }
             )
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners_small)))
-            .background(Color.White)
-            .clickable { onRowClick() }
+            //.background(Color.White)
+            .background(if (isEnabled) Color.White else DuskyGrey)
+            .clickable(enabled = isEnabled) { onRowClick() }
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_medium),
                 vertical = dimensionResource(id = R.dimen.padding_xsmall)

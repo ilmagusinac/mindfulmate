@@ -48,7 +48,7 @@ class DailyCheckInServiceImpl @Inject constructor(
             val date = document.getString("date") ?: "Unknown Date"
             date to moodScore
         }.also {
-            println("Fetched check-ins: $it") // Debugging log
+            println("Fetched check-ins: $it")
         }
     }
 

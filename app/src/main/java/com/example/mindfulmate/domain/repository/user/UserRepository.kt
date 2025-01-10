@@ -19,4 +19,5 @@ interface UserRepository {
     suspend fun updateUser(user: User)
     suspend fun deleteUser()
     suspend fun updateEmail(email: String, password: String, newEmail: String)
+    suspend fun getAllUsers(): List<Pair<String, String>>
 }

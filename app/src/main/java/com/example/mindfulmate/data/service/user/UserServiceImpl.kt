@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class UserServiceImpl(
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : UserService {
 
@@ -31,5 +31,20 @@ class UserServiceImpl(
     override suspend fun deleteUser() {
         val currentUserUid = auth.currentUser?.uid ?: throw Exception("User not logged in")
         usersCollection.document(currentUserUid).delete().await()
+    }
+
+    override suspend fun getAllUsers(): List<Pair<String, String>> {
+        val currentUserId = auth.currentUser?.uid ?: throw Exception("User not logged in")
+        return try {
+            val snapshot = firestore.collection("users").get().await()
+            snapshot.documents.mapNotNull { document ->
+                val userId = document.id
+                val username = document.getString("username")
+                if (userId != currentUserId && username != null) userId to username else null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
     }
 }
