@@ -70,6 +70,7 @@ dependencies {
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.ui.test.android)
     kapt(libs.hilt.android.compiler)
     //implementation(libs.androidx.hilt.lifecycle.viewmodel)
     kapt(libs.androidx.hilt.compiler)
@@ -81,6 +82,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-messaging")
 
     //Authentication with Credential Manager
     implementation("com.google.android.gms:play-services-auth:21.2.0")

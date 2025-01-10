@@ -9,10 +9,11 @@
     <dimen name="spacing_xxxxmlarge">150dp</dimen>
     <dimen name="spacing_xxxxlarge">173dp</dimen>
     <dimen name="spacing_xmedium">14dp</dimen>
-    <dimen name="spacing_xxmedium">23dp</dimen>
+    <dimen name="spacing_xxxmedium">23dp</dimen>
     <dimen name="spacing_xxdefault">5dp</dimen>
     <dimen name="spacing_xdefault">8dp</dimen>
-    <dimen name="spacing_xxxmedium">30dp</dimen>
+    <dimen name="spacing_xxxxmedium">30dp</dimen>
+    <dimen name="spacing_xxmedium">17dp</dimen>
 
     <!--Padding-->
     <dimen name="padding_xsmall">4dp</dimen>
@@ -25,6 +26,7 @@
     <dimen name="padding_xxxmedium">23dp</dimen>
     <dimen name="padding_mlarge">180dp</dimen>
     <dimen name="padding_default">8dp</dimen>
+    <dimen name="padding_mediumx">14dp</dimen>
 
     <!--Height & Width-->
     <dimen name="height_medium">8dp</dimen>
@@ -57,4 +59,5 @@
     <dimen name="blur_medium">25dp</dimen>
     <dimen name="radius_small">2dp</dimen>
     <dimen name="axis_step_size_large">50dp</dimen>
+    <dimen name="box_height_small">1dp</dimen>
 </resources>
