@@ -3,6 +3,9 @@ package com.example.mindfulmate.presentation.ui.screen.profile.util
 import androidx.compose.ui.text.input.TextFieldValue
 
 data class EditProfileParams(
+    val imageUrl: String? = null,
+    val usernameError: String? = null,
+    val myCommunities: List<String> = emptyList(),
     val firstNameFieldValue: TextFieldValue = TextFieldValue(),
     val lastNameFieldValue: TextFieldValue = TextFieldValue(),
     val usernameFieldValue: TextFieldValue = TextFieldValue(),

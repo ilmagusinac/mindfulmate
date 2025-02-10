@@ -6,6 +6,7 @@ data class CommunitySectionParams(
     val communityId: String = "",
     val title: String = "",
     val membersCount: String = "",
-    val imageRes: Int = R.drawable.ic_splash,
+    val profileImageUrl: String = "",
+    val backgroundImageUrl: String = "",
     val onViewCommunityClick: (String) -> Unit = {}
 )

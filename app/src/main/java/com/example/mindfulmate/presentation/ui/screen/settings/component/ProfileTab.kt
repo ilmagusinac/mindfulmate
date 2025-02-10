@@ -34,6 +34,7 @@ fun ProfileTab(
     firstName: String,
     lastName: String,
     username: String,
+    profileImageUrl: String,
     onProfileTabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,7 +59,7 @@ fun ProfileTab(
             horizontalArrangement = Arrangement.Start
         ) {
             MindfulMateProfileImage(
-                imageUrl = null,
+                imageUrl = profileImageUrl,
                 placeholderRes = R.drawable.ic_profile,
                 size = dimensionResource(id = R.dimen.icon_xlarge),
                 tint = DuskyBlue
@@ -95,6 +96,7 @@ private fun ProfileTabPreview() {
             firstName = "Ilma",
             lastName = "Gusinac",
             username = "ilmagusinac",
+            profileImageUrl = "",
             onProfileTabClick = {}
         )
     }

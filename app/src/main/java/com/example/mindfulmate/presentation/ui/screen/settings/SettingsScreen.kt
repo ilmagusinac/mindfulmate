@@ -1,5 +1,6 @@
 package com.example.mindfulmate.presentation.ui.screen.settings
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,10 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Grey
@@ -41,12 +42,19 @@ fun SettingsScreen(
     onEditCredentialsClick: () -> Unit,
     onAboutAppClick: () -> Unit,
     onHelpSupportClick: () -> Unit,
+    onEmergencyContactSupportClick: () -> Unit,
     navigate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState: SettingsUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isNotificationsEnabled by viewModel.isNotificationsEnabled.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
+    LaunchedEffect(viewModel) {
+        viewModel.toastMessage.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
     NavigationEventHandler(
         viewModel = viewModel,
         navigate = navigate
@@ -69,7 +77,7 @@ fun SettingsScreen(
                 onEditCredentialsClick = onEditCredentialsClick,
                 isNotificationsEnabled = isNotificationsEnabled,
                 onNotificationsReminders = { viewModel.toggleNotifications()},
-                onEmergencyContactSupportClick = {},
+                onEmergencyContactSupportClick = onEmergencyContactSupportClick,
                 onSignOutClick = { viewModel.signOut() },
                 onHelpSupportClick = onHelpSupportClick,
                 onAboutAppClick = onAboutAppClick,
@@ -133,6 +141,7 @@ private fun SettingsScreen(
             firstName = settingsParams.firstName,
             lastName = settingsParams.lastName,
             username = settingsParams.username,
+            profileImageUrl = settingsParams.profilePicture,
             onProfileTabClick = onGoToProfileClick
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))

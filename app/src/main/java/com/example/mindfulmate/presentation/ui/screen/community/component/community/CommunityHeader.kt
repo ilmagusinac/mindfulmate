@@ -1,7 +1,5 @@
 package com.example.mindfulmate.presentation.ui.screen.community.component.community
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil3.compose.AsyncImage
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
@@ -37,20 +36,20 @@ fun CommunityHeader(
     title: String,
     membersCount: String,
     description: String,
+    profileImage: String,
     isSaved: Boolean,
     onBackButtonClick: () -> Unit,
     onSaveStateChanged: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    @DrawableRes imageRes: Int = R.drawable.ic_splash
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)))
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = null,
+        AsyncImage(
+            model = profileImage,
+            contentDescription = "community image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
@@ -131,6 +130,7 @@ private fun CommunityHeaderPreview() {
             title = "Stress Reliefe",
             membersCount = "12",
             description = "fjrubfvrbhjndkljihugzhcfnbjnklhugzuftcgvhbjnkjigzfgvhbjnkjh oihgvbjnk ghijv fhfhfhhff ",
+            profileImage = "",
             isSaved = true,
             onBackButtonClick = {},
             onSaveStateChanged = {}

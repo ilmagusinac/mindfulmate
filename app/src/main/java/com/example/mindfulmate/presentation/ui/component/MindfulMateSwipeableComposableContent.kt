@@ -10,14 +10,19 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.unit.dp
 import com.example.mindfulmate.R
+import com.example.mindfulmate.presentation.theme.DuskyBlue
+import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 
 @Composable
@@ -27,6 +32,10 @@ fun MindfulMateSwipeableComposableContent(
 ) {
     var currentPage by remember { mutableStateOf(0) }
     val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(lazyListState.firstVisibleItemIndex) {
+        currentPage = lazyListState.firstVisibleItemIndex
+    }
 
     Column {
         LazyRow(
@@ -60,6 +69,22 @@ fun MindfulMateSwipeableComposableContent(
             lazyListState.animateScrollToItem(currentPage)
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_medium)))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            contents.forEachIndexed { index, _ ->
+                Box(
+                    modifier = Modifier
+                        .size(25.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_xsmall))
+                        .clip(CircleShape)
+                        .background(
+                            if (index == currentPage) DuskyBlue else LightGrey
+                        )
+                )
+            }
+        }
     }
 }
 
@@ -71,7 +96,6 @@ private fun MindfulMateSwipeablePostsWithIndicatorsPreview() {
             {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
                         .background(Color.Red),
                     contentAlignment = Alignment.Center
                 ) {

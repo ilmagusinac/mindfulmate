@@ -1,8 +1,11 @@
 package com.example.mindfulmate.presentation.ui.screen.chat.component.chat_home
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,10 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Blue
+import com.example.mindfulmate.presentation.theme.DuskyBlue
+import com.example.mindfulmate.presentation.theme.DuskyGrey
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMateIconPlacement
+import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 
 @Composable
 fun ChatHomeRow(
@@ -37,8 +45,9 @@ fun ChatHomeRow(
     time: String?,
     isChatClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_profile,
-    newMessage: Boolean? = null
+    imageUrl: String? = null,
+    newMessage: Boolean? = null,
+    currentUserId: String
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -46,7 +55,10 @@ fun ChatHomeRow(
             .fillMaxWidth()
             .clickable { isChatClicked() }
     ) {
-        MindfulMateIconPlacement(placeholderRes = placeholderRes)
+        MindfulMateProfileImage(
+            imageUrl = imageUrl,
+            size = dimensionResource(id = R.dimen.icon_large),
+        )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_xdefault)))
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -83,7 +95,7 @@ fun ChatHomeRow(
                 ),
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.spacing_small))
             )
-            if(newMessage == true) {
+            if (newMessage == true && username != currentUserId) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_circle),
                     contentDescription = null,
@@ -104,7 +116,9 @@ private fun ChatHomeRowPreview() {
             lastMessage = "This is our last message",
             date = "12/7/2024",
             time = "12:33",
-            isChatClicked = {}
+            imageUrl = "",
+            isChatClicked = {},
+            currentUserId = ""
         )
     }
 }
@@ -118,7 +132,9 @@ private fun ChatHomeRowNoNewMessagesPreview() {
             lastMessage = "This is our last messagegggggggggggmmmmmmmmmmmmmmmmmmmmmmmmmmmmmgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
             date = "12/7/2024",
             time = "12:33",
-            isChatClicked = {}
+            imageUrl = "",
+            isChatClicked = {},
+            currentUserId = ""
         )
     }
 }

@@ -34,6 +34,7 @@ import com.example.mindfulmate.presentation.view_model.community.community_home.
 fun CommunityHomeScreen(
     viewModel: CommunityHomeViewModel,
     onCommunityClick: (String) -> Unit,
+    onSearchItemClick: (SearchItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState: CommunityHomeUiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +68,7 @@ fun CommunityHomeScreen(
                 onSearchCommunitiesChange = { textState = it },
                 allCommunities = communities,
                 myCommunities = userCommunities,
-                onSearchItemClick = {},
+                onSearchItemClick = onSearchItemClick,
                 modifier = modifier
             )
         }

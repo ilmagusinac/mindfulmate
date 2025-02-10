@@ -21,3 +21,11 @@ fun String.validateEmail(): String? {
 fun String.validatePasswordMatch(repeatPassword: String): String? {
     return if (this == repeatPassword) null else "Passwords do not match"
 }
+
+fun String.validatePhoneNumber(): String? {
+    return when {
+        this.isBlank() -> "Phone number cannot be empty"
+        !this.matches("^\\+?[0-9]{8,15}$".toRegex()) -> "Invalid phone number format"
+        else -> null
+    }
+}

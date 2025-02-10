@@ -6,5 +6,9 @@ import com.example.mindfulmate.R
 data class CommunityAnswerParams(
     val username: String = "",
     val comment: String = "",
-    @DrawableRes val placeholderRes: Int = R.drawable.ic_profile
+    val isOwner: Boolean = false,
+    val placeholderRes: String? = null,
+    val onEditClick: () -> Unit,
+    val onDeleteClick: () -> Unit,
+    val onUserClick: () -> Unit
 )

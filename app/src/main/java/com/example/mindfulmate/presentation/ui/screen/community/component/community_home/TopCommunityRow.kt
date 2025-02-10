@@ -1,6 +1,6 @@
 package com.example.mindfulmate.presentation.ui.screen.community.component.community_home
 
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,13 +22,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.DuskyBlue
 import com.example.mindfulmate.presentation.theme.Grey
@@ -69,7 +70,7 @@ fun TopCommunityRow(
             ) {
                 items(topCommunities) { community ->
                     CommunityProfile(
-                        imageRes = community.imageRes,
+                        imageUrl = community.profileImageUrl,
                         name = community.title,
                         onCommunityClick = { communityId ->
                             community.onViewCommunityClick(communityId)
@@ -84,7 +85,7 @@ fun TopCommunityRow(
 
 @Composable
 fun CommunityProfile(
-    imageRes: Int,
+    imageUrl: String,
     name: String,
     communityId: String,
     onCommunityClick: (String) -> Unit,
@@ -107,9 +108,9 @@ fun CommunityProfile(
                 .background(Color.White)
                 .clickable { onCommunityClick(communityId) }
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = null,
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "$name community image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .matchParentSize()
@@ -142,7 +143,7 @@ private fun AllCommunitiesRowPreview() {
 private fun CommunityProfilePreview() {
     MindfulMateTheme {
         CommunityProfile(
-            imageRes = R.drawable.ic_profile,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/mindful-mate-8a4a8.firebasestorage.app/o/communityImages%2FbackgroundImage%2Fimagetest.jpg?alt=media&token=a1d50cd7-674f-4f1f-9678-51dfdbe3a10c",
             name = "New Community",
             onCommunityClick = {},
             communityId = ""

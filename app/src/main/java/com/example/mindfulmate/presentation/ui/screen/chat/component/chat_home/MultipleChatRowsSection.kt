@@ -44,6 +44,8 @@ fun MultipleChatRowsSection(
                     time = row.time,
                     newMessage = row.newMessage,
                     isChatClicked = { row.isChatClicked(row.chatId) },
+                    currentUserId = row.currentUserId,
+                    imageUrl = row.profilePicture,
                     modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_xxmedium))
                 )
             }

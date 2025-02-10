@@ -1,25 +1,12 @@
 package com.example.mindfulmate.presentation.ui.screen.chat.component.chat
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import com.example.mindfulmate.R
 import com.example.mindfulmate.domain.model.chat.Message
-import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMateMessageInputField
 
@@ -27,6 +14,8 @@ import com.example.mindfulmate.presentation.ui.component.MindfulMateMessageInput
 fun ChatMessageList(
     messageList: List<Message>,
     currentUser: String?,
+    onEditMessage: (Message) -> Unit,
+    onDeleteMessage: (Message) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -36,7 +25,9 @@ fun ChatMessageList(
         items(messageList.reversed()) { message ->
             ChatMessageRow(
                 messageModel = message,
-                currentUser = currentUser
+                currentUser = currentUser,
+                onEditMessage = onEditMessage,
+                onDeleteMessage = onDeleteMessage
             )
         }
     }
@@ -65,7 +56,9 @@ private fun MessageListPreview() {
 
         ChatMessageList(
             messageList = sampleMessages,
-            currentUser = "yourCurrentUserId"
+            currentUser = "yourCurrentUserId",
+            onDeleteMessage = {},
+            onEditMessage = {}
         )
     }
 }
@@ -79,7 +72,9 @@ private fun NoMessageListPreview() {
         Column {
             ChatMessageList(
                 messageList = sampleMessages,
-                currentUser = "yourCurrentUserId"
+                currentUser = "yourCurrentUserId",
+                onDeleteMessage = {},
+                onEditMessage = {}
             )
             MindfulMateMessageInputField(onMessageSend = {})
         }

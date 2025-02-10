@@ -53,6 +53,19 @@ sealed class Screen(val route: String) {
         }
     }
 
+    data class EditPost(
+        val communityId: String,
+        val postId: String
+    ) :
+        Screen(route = "edit_post_screen/{communityId}/{postId}") {
+        companion object {
+            fun createRoute(communityId: String, postId: String) =
+                "edit_post_screen/$communityId/$postId"
+        }
+    }
+
+    data object EmergencyContact : Screen(route = "emergency_contact_screen")
+
     companion object {
         fun getBottomNavRoutes(): List<String> {
             return listOf(

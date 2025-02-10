@@ -44,7 +44,11 @@ fun MultipleCommunityPostComments(
                 CommunityPostComment(
                     username = comment.username,
                     comment = comment.comment,
-                    placeholderRes = comment.placeholderRes
+                    isOwner = comment.isOwner,
+                    userProfileImageUrl = comment.placeholderRes,
+                    onDeleteClick = comment.onDeleteClick,
+                    onEditClick = comment.onEditClick,
+                    onUserClick = comment.onUserClick
                 )
             }
         }
@@ -59,25 +63,39 @@ private fun MultipleCommunityPostCommentsPreview() {
             communityComments = listOf(
                 CommunityAnswerParams(
                     username = "username",
-                    comment = "nfbfuindcsgziuhojlnjb nfhuigzuvjchbjnklflrhuewds ifohuigebhfwcsnkjfehwfjs"
+                    comment = "nfbfuindcsgziuhojlnjb nfhuigzuvjchbjnklflrhuewds ifohuigebhfwcsnkjfehwfjs",
+                    onDeleteClick = {},
+                    onEditClick = {},
+                    onUserClick = {}
                 ),
                 CommunityAnswerParams(
                     username = "username",
                     comment = "nfbfuindcsgziuhojlnjb nfhuigcjidhujvswbnekmkfovjichu<vhwzuvjchbjnklflrhuewds ifohuigebhfwcsnkjfehwfjs",
-                    placeholderRes = R.drawable.ic_launcher_background
+                    placeholderRes = "R.drawable.ic_launcher_background",
+                    onDeleteClick = {},
+                    onEditClick = {},
+                    onUserClick = {}
                 ),
                 CommunityAnswerParams(
                     username = "username",
-                    comment = "something else"
+                    comment = "something else",
+                    onDeleteClick = {},
+                    onEditClick = {},
+                    onUserClick = {}
                 ),
                 CommunityAnswerParams(
                     username = "username",
-                    comment = "other comment 123456"
+                    comment = "other comment 123456",
+                    onDeleteClick = {},
+                    onEditClick = {},
+                    onUserClick = {}
                 ),
                 CommunityAnswerParams(
                     username = "username",
                     comment = "nfbfuindcsgziuhojlnjb nfhuigzuvjchbjnklflrhuewds ifohuigebhfwcsnkjfehwfjs",
-                    placeholderRes = R.drawable.ic_launcher_background
+                    onDeleteClick = {},
+                    onEditClick = {},
+                    onUserClick = {}
                 )
             )
         )

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -27,10 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
+import com.example.mindfulmate.presentation.navigation.Screen
 import com.example.mindfulmate.presentation.theme.Blue
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
+import com.example.mindfulmate.presentation.theme.SuperLightGrey
 
 @Composable
 fun BottomBarNavigationComponent(
@@ -74,11 +78,30 @@ fun BottomBarNavigationComponent(
                         }
                     },
                     icon = {
-                        Icon(
-                            painter = painterResource(id = item.iconRes),
-                            contentDescription = stringResource(id = item.titleId),
-                            tint = if (selected) Blue else Grey
-                        )
+                        if (item.route == Screen.ChatHome.route && item.unreadCount!! > 0) {
+                            BadgedBox(
+                                badge = {
+                                    Badge(containerColor = SuperLightGrey) {
+                                        Text(
+                                            text = if (item.unreadCount > 9) "9+" else item.unreadCount.toString(),
+                                            style = MaterialTheme.typography.labelSmall.copy(color = Color.White)
+                                        )
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = item.iconRes),
+                                    contentDescription = stringResource(id = item.titleId),
+                                    tint = if (selected) Blue else Grey
+                                )
+                            }
+                        } else {
+                            Icon(
+                                painter = painterResource(id = item.iconRes),
+                                contentDescription = stringResource(id = item.titleId),
+                                tint = if (selected) Blue else Grey
+                            )
+                        }
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Grey,
@@ -101,7 +124,7 @@ private fun BottomBarNavigationComponentPreview() {
             BottomBarNavigationItem(
                 titleId = R.string.home,
                 iconRes = R.drawable.ic_home,
-                route = "home"
+                route = "home",
             ),
             BottomBarNavigationItem(
                 titleId = R.string.community,
@@ -110,8 +133,9 @@ private fun BottomBarNavigationComponentPreview() {
             ),
             BottomBarNavigationItem(
                 titleId = R.string.resources,
-                iconRes = R.drawable.ic_resources,
-                route = "resources"
+                iconRes = R.drawable.ic_chat,
+                route = Screen.ChatHome.route,
+                unreadCount = 5
             ),
             BottomBarNavigationItem(
                 titleId = R.string.profile,

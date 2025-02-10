@@ -27,6 +27,7 @@ import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
+import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_credential.IconPlacement
 
 @Composable
@@ -40,7 +41,7 @@ fun CommunityPostQuestion(
     isSaved: Boolean,
     onLikeClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_profile
+    userProfileImageUrl: String? = null
 ) {
     Column(
         modifier = modifier
@@ -49,9 +50,10 @@ fun CommunityPostQuestion(
             .padding(dimensionResource(id = R.dimen.padding_default))
     ) {
         Row {
-            IconPlacement(
-                placeholderRes = placeholderRes,
-                backgroundColor = DuskyWhite
+            MindfulMateProfileImage(
+                imageUrl = userProfileImageUrl,
+                backgroundColor = DuskyWhite,
+                size = dimensionResource(id = R.dimen.icon_large),
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_medium)))
             Column {

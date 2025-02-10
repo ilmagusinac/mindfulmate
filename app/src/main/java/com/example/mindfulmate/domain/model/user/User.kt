@@ -6,5 +6,7 @@ data class User(
     val lastName: String = "",
     val username: String = "",
     val number: String = "",
-    val email: String = ""
+    val email: String = "",
+    val profileImageUrl: String = "",
+    val myCommunities: List<String> = emptyList()
 )

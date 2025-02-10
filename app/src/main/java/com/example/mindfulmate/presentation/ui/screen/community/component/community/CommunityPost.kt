@@ -1,6 +1,5 @@
 package com.example.mindfulmate.presentation.ui.screen.community.component.community
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
@@ -29,7 +29,7 @@ import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
-import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_credential.IconPlacement
+import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 
 @Composable
 fun CommunityPost(
@@ -39,9 +39,13 @@ fun CommunityPost(
     questionDescription: String,
     likeCount: String,
     commentCount: String,
+    isOwner: Boolean,
     onCommentsClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onUserClick: () -> Unit,
     modifier: Modifier = Modifier,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_profile
+    userProfileImageUrl: String? = null
 ) {
     Column(
         modifier = modifier
@@ -51,9 +55,11 @@ fun CommunityPost(
             .padding(dimensionResource(id = R.dimen.padding_default))
     ) {
         Row {
-            IconPlacement(
-                placeholderRes = placeholderRes,
-                backgroundColor = DuskyWhite
+            MindfulMateProfileImage(
+                imageUrl = userProfileImageUrl,
+                backgroundColor = DuskyWhite,
+                size = dimensionResource(id = R.dimen.icon_large),
+                modifier = Modifier.clickable { onUserClick() }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_medium)))
             Column {
@@ -76,6 +82,26 @@ fun CommunityPost(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
             }
+            Spacer(modifier = Modifier.weight(1f))
+            if(isOwner) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_edit),
+                    contentDescription = null,
+                    tint = Grey,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_small))
+                        .clickable { onEditClick() }
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_xsmall)))
+                Icon(
+                    painter = painterResource(R.drawable.ic_delete),
+                    contentDescription = null,
+                    tint = Grey,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_small))
+                        .clickable { onDeleteClick() }
+                )
+            }
         }
         Column(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_xxxmedium))) {
             Text(
@@ -92,7 +118,9 @@ fun CommunityPost(
                     color = Grey,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.W300
-                )
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -144,7 +172,31 @@ private fun CommunityPostPreview() {
             questionDescription = "Hello everyone can you please tell if you are feeling stressed during exams and how do you cope with stress management",
             likeCount = "23",
             commentCount = "14",
-            onCommentsClick = {}
+            isOwner = true,
+            onCommentsClick = {},
+            onDeleteClick = {},
+            onEditClick = {},
+            onUserClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF3D3D3D)
+@Composable
+private fun CommunityPostNoOwnerPreview() {
+    MindfulMateTheme {
+        CommunityPost(
+            username = "username",
+            date = "12/3/2024",
+            questionTitle = "How will you manage stress",
+            questionDescription = "Hello everyone can you please tell if you are feeling stressed during exams and how do you cope with stress management",
+            likeCount = "23",
+            commentCount = "14",
+            isOwner = false,
+            onCommentsClick = {},
+            onDeleteClick = {},
+            onEditClick = {},
+            onUserClick = {}
         )
     }
 }

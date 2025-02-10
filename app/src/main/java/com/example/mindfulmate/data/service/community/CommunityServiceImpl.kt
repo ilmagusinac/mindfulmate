@@ -12,7 +12,7 @@ import javax.inject.Inject
 class CommunityServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
-): CommunityService {
+) : CommunityService {
 
     override suspend fun getAllCommunities(): List<Community> {
         try {
@@ -21,8 +21,11 @@ class CommunityServiceImpl @Inject constructor(
                 .await()
 
             return snapshot.documents.mapNotNull { document ->
-                val community = document.toObject(Community::class.java)?.copy(id = document.id)
-                community
+                document.toObject(Community::class.java)?.copy(
+                    id = document.id,
+                    profilePicture = document.getString("profilePicture") ?: "",
+                    backgroundPicture = document.getString("backgroundPicture") ?: ""
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -33,26 +36,40 @@ class CommunityServiceImpl @Inject constructor(
     override suspend fun addUserToCommunity(communityId: String) {
         val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
         try {
-            firestore.collection("users")
-                .document(userId)
-                .update("myCommunities", FieldValue.arrayUnion(communityId))
-                .await()
+            val communityRef = firestore.collection("communities").document(communityId)
+            val userRef = firestore.collection("users").document(userId)
+
+            val communitySnapshot = communityRef.get().await()
+            val currentCount = communitySnapshot.getLong("membersCount") ?: 0
+
+            firestore.runTransaction { transaction ->
+                transaction.update(userRef, "myCommunities", FieldValue.arrayUnion(communityId))
+
+                transaction.update(communityRef, "membersCount", currentCount + 1)
+            }.await()
         } catch (e: Exception) {
             e.printStackTrace()
-            throw Exception("Failed to save community: ${e.message}")
+            throw Exception("Failed to add user to community: ${e.message}")
         }
     }
 
     override suspend fun removeUserFromCommunity(communityId: String) {
         val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
         try {
-            firestore.collection("users")
-                .document(userId)
-                .update("myCommunities", FieldValue.arrayRemove(communityId))
-                .await()
+            val communityRef = firestore.collection("communities").document(communityId)
+            val userRef = firestore.collection("users").document(userId)
+
+            val communitySnapshot = communityRef.get().await()
+            val currentCount = communitySnapshot.getLong("membersCount") ?: 1
+
+            firestore.runTransaction { transaction ->
+                transaction.update(userRef, "myCommunities", FieldValue.arrayRemove(communityId))
+
+                transaction.update(communityRef, "membersCount", maxOf(0, currentCount - 1))
+            }.await()
         } catch (e: Exception) {
             e.printStackTrace()
-            throw Exception("Failed to unsave community: ${e.message}")
+            throw Exception("Failed to remove user from community: ${e.message}")
         }
     }
 
@@ -60,9 +77,9 @@ class CommunityServiceImpl @Inject constructor(
         val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
         val userDoc = firestore.collection("users").document(userId).get().await()
         val communityIds = userDoc.get("myCommunities") as? List<String> ?: emptyList()
-        println("communityids: $communityIds")
         val communities = communityIds.mapNotNull { communityId ->
-            val communityDoc = firestore.collection("communities").document(communityId).get().await()
+            val communityDoc =
+                firestore.collection("communities").document(communityId).get().await()
             communityDoc.toObject(Community::class.java)?.copy(id = communityId)
         }
         return communities
@@ -90,7 +107,9 @@ class CommunityServiceImpl @Inject constructor(
             .document()
             .id
 
-        val postWithId = post.copy(postId = postId)
+        val userId = getCurrentUsersId()
+
+        val postWithId = post.copy(postId = postId, userId = userId)
 
         try {
             firestore.collection("communities")
@@ -104,6 +123,7 @@ class CommunityServiceImpl @Inject constructor(
             throw Exception("Failed to create post: ${e.message}")
         }
     }
+
 
     override suspend fun getPost(communityId: String, postId: String): Post {
         val snapshot = firestore.collection("communities")
@@ -127,11 +147,10 @@ class CommunityServiceImpl @Inject constructor(
     }
 
     override suspend fun writeComment(communityId: String, postId: String, commentText: String) {
-        val userId = getCurrentUserId()
+        val userId = getCurrentUsersId()
         val username = fetchUsername(userId) ?: "Anonymous"
 
         try {
-            // 1. Add the comment without setting the commentId first
             val commentRef = firestore.collection("communities")
                 .document(communityId)
                 .collection("posts")
@@ -140,17 +159,13 @@ class CommunityServiceImpl @Inject constructor(
                 .add(
                     Comment(
                         userId = userId,
-                        commentId = "",  // Temporarily empty, will be updated below
+                        commentId = "",
                         comment = commentText,
                         username = username,
                         timestamp = com.google.firebase.Timestamp.now()
                     )
                 ).await()
-
-            // 2. Update the commentId field with the auto-generated document ID
             commentRef.update("commentId", commentRef.id).await()
-
-            // 3. Increment the commentsCount in the post document
             firestore.collection("communities")
                 .document(communityId)
                 .collection("posts")
@@ -164,7 +179,7 @@ class CommunityServiceImpl @Inject constructor(
         }
     }
 
-    private suspend fun fetchUsername(userId: String): String? {
+    override suspend fun fetchUsername(userId: String): String? {
         return try {
             val userSnapshot = firestore.collection("users")
                 .document(userId)
@@ -175,6 +190,14 @@ class CommunityServiceImpl @Inject constructor(
             e.printStackTrace()
             null
         }
+    }
+
+    override suspend fun getCurrentUserId(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
+    private fun getCurrentUsersId(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
     }
 
     override suspend fun isCommunitySavedByUser(communityId: String): Boolean {
@@ -195,14 +218,9 @@ class CommunityServiceImpl @Inject constructor(
         }
     }
 
-    private fun getCurrentUserId(): String {
-        return auth.currentUser?.uid ?: throw Exception("User not logged in")
-    }
-
     override suspend fun likePost(communityId: String, postId: String) {
-        val userId = getCurrentUserId()
+        val userId = getCurrentUsersId()
         try {
-            // Increment the likes in the post
             firestore.collection("communities")
                 .document(communityId)
                 .collection("posts")
@@ -210,7 +228,6 @@ class CommunityServiceImpl @Inject constructor(
                 .update("likes", FieldValue.increment(1))
                 .await()
 
-            // Add postId to the user's likedPosts
             firestore.collection("users")
                 .document(userId)
                 .update("likedPosts", FieldValue.arrayUnion(postId))
@@ -222,9 +239,8 @@ class CommunityServiceImpl @Inject constructor(
     }
 
     override suspend fun unlikePost(communityId: String, postId: String) {
-        val userId = getCurrentUserId()
+        val userId = getCurrentUsersId()
         try {
-            // Decrement the likes in the post
             firestore.collection("communities")
                 .document(communityId)
                 .collection("posts")
@@ -232,7 +248,6 @@ class CommunityServiceImpl @Inject constructor(
                 .update("likes", FieldValue.increment(-1))
                 .await()
 
-            // Remove postId from the user's likedPosts
             firestore.collection("users")
                 .document(userId)
                 .update("likedPosts", FieldValue.arrayRemove(postId))
@@ -245,13 +260,155 @@ class CommunityServiceImpl @Inject constructor(
 
     override suspend fun isPostLikedByUser(postId: String): Boolean {
         return try {
-            val userId = getCurrentUserId()
+            val userId = getCurrentUsersId()
             val userSnapshot = firestore.collection("users").document(userId).get().await()
             val likedPosts = userSnapshot.get("likedPosts") as? List<String> ?: emptyList()
             likedPosts.contains(postId)
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+    }
+
+    override suspend fun deletePost(communityId: String, postId: String) {
+        val userId = getCurrentUsersId()
+
+        try {
+            val postSnapshot = firestore.collection("communities")
+                .document(communityId)
+                .collection("posts")
+                .document(postId)
+                .get()
+                .await()
+
+            val postOwnerId = postSnapshot.getString("userId")
+
+            if (postOwnerId == userId) {
+
+                val commentsSnapshot = firestore.collection("communities")
+                    .document(communityId)
+                    .collection("posts")
+                    .document(postId)
+                    .collection("comments")
+                    .get()
+                    .await()
+
+                commentsSnapshot.documents.forEach { comment ->
+                    comment.reference.delete().await()
+                }
+
+                firestore.collection("communities")
+                    .document(communityId)
+                    .collection("posts")
+                    .document(postId)
+                    .delete()
+                    .await()
+            } else {
+
+                throw Exception("You are not authorized to delete this post")
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw Exception("Failed to delete post: ${e.message}")
+        }
+    }
+
+    override suspend fun editPost(
+        communityId: String,
+        postId: String,
+        newTitle: String,
+        newBody: String
+    ) {
+        val userId = getCurrentUsersId()
+        val postSnapshot = firestore.collection("communities")
+            .document(communityId)
+            .collection("posts")
+            .document(postId)
+            .get()
+            .await()
+
+        val postOwnerId = postSnapshot.getString("userId")
+
+        if (postOwnerId == userId) {
+            firestore.collection("communities")
+                .document(communityId)
+                .collection("posts")
+                .document(postId)
+                .update(
+                    mapOf(
+                        "title" to newTitle,
+                        "body" to newBody
+                    )
+                ).await()
+        } else {
+            throw Exception("You are not authorized to edit this post")
+        }
+    }
+
+    override suspend fun deleteComment(communityId: String, postId: String, commentId: String) {
+        val userId = getCurrentUsersId()
+        val commentSnapshot = firestore.collection("communities")
+            .document(communityId)
+            .collection("posts")
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+            .get()
+            .await()
+
+        val commentOwnerId = commentSnapshot.getString("userId")
+
+        if (commentOwnerId == userId) {
+            firestore.collection("communities")
+                .document(communityId)
+                .collection("posts")
+                .document(postId)
+                .collection("comments")
+                .document(commentId)
+                .delete()
+                .await()
+
+            firestore.collection("communities")
+                .document(communityId)
+                .collection("posts")
+                .document(postId)
+                .update("commentsCount", FieldValue.increment(-1))
+                .await()
+        } else {
+            throw Exception("You are not authorized to delete this comment")
+        }
+    }
+
+    override suspend fun editComment(
+        communityId: String,
+        postId: String,
+        commentId: String,
+        newCommentText: String
+    ) {
+        val userId = getCurrentUsersId()
+        val commentSnapshot = firestore.collection("communities")
+            .document(communityId)
+            .collection("posts")
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+            .get()
+            .await()
+
+        val commentOwnerId = commentSnapshot.getString("userId")
+
+        if (commentOwnerId == userId) {
+            firestore.collection("communities")
+                .document(communityId)
+                .collection("posts")
+                .document(postId)
+                .collection("comments")
+                .document(commentId)
+                .update("comment", newCommentText)
+                .await()
+        } else {
+            throw Exception("You are not authorized to edit this comment")
         }
     }
 }

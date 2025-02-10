@@ -37,7 +37,7 @@ fun ChatHomeScreen(
 ) {
     val uiState: ChatHomeUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val chatRows by viewModel.chatRows.collectAsStateWithLifecycle()
-    val users by viewModel.users.collectAsStateWithLifecycle()
+    val users by viewModel.usersSearch.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.fetchChats()
@@ -60,9 +60,11 @@ fun ChatHomeScreen(
                 users = textState,
                 onUsersChange = { textState = it },
                 allSearchItems = users,
-                onChatClicked = onChatClicked,
+                onChatClicked = { chatId ->
+                    viewModel.markMessagesAsRead(chatId)
+                    onChatClicked(chatId)
+                },
                 onSearchItemClick = { searchItem ->
-                    println("searchitemid: ${searchItem.id}")
                     viewModel.startChatWithUser(searchItem.id) { chatId ->
                         onChatClicked(chatId)
                     }
@@ -112,11 +114,13 @@ private fun ChatHomeScreen(
             rows = chatRows.map { chat ->
                 ChatRow(
                     chatId = chat.chatId,
+                    currentUserId = chat.currentUserId,
                     username = chat.username,
                     lastMessage = chat.lastMessage,
                     date = chat.date,
                     time = chat.time,
                     newMessage = chat.newMessage,
+                    profilePicture = chat.profilePicture,
                     isChatClicked = onChatClicked
                 )
             }
@@ -139,6 +143,15 @@ private fun ChatHomeScreenPreview() {
                     date = "12/3/2024",
                     time = "12:33",
                     newMessage = true,
+                    isChatClicked = {}
+                ),
+                ChatRow(
+                    chatId = "ff",
+                    username = "username",
+                    lastMessage = "last message",
+                    date = "12/3/2024",
+                    time = "12:33",
+                    newMessage = false,
                     isChatClicked = {}
                 )
             ),

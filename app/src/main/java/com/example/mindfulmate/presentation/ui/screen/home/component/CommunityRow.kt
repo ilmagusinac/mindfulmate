@@ -1,7 +1,5 @@
 package com.example.mindfulmate.presentation.ui.screen.home.component
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +27,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
@@ -77,8 +75,8 @@ fun CommunityRow(
                     CommunityCard(
                         title = community.title,
                         membersCount = community.membersCount,
-                        backgroundImage = community.imageRes,
-                        logo = community.imageRes,
+                        profileImageUrl = community.profileImageUrl,
+                        backgroundImageUrl = community.backgroundImageUrl,
                         communityId = community.communityId,
                         onCommunityCardClick = community.onViewCommunityClick
                     )
@@ -93,8 +91,8 @@ fun CommunityCard(
     title: String,
     membersCount: String,
     communityId: String,
-    @DrawableRes backgroundImage: Int,
-    @DrawableRes logo: Int,
+    profileImageUrl: String,
+    backgroundImageUrl: String,
     onCommunityCardClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -126,16 +124,32 @@ fun CommunityCard(
                         )
                     )
             ) {
-                Image(
-                    painter = painterResource(id = backgroundImage),
-                    contentDescription = null,
+                AsyncImage(
+                    model = backgroundImageUrl,
+                    contentDescription = "community image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
-            }
+            }/*
             Image(
                 painter = painterResource(id = logo),
                 contentDescription = null,
+                modifier = Modifier
+                    .size(48.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = (-24).dp)
+                    .background(
+                        color = DuskyWhite,
+                        shape = CircleShape
+                    )
+                    .padding(dimensionResource(id = R.dimen.padding_xsmall))
+                    .clip(CircleShape)
+            )*/
+
+            AsyncImage(
+                model = profileImageUrl,
+                contentDescription = "community image",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(48.dp)
                     .align(Alignment.CenterHorizontally)
@@ -176,8 +190,8 @@ fun CommunityCardPreview() {
         CommunityCard(
             title = "Anxiety Management",
             membersCount = "23,600",
-            backgroundImage = R.drawable.ic_resources,
-            logo = R.drawable.ic_heart,
+            profileImageUrl = "",
+            backgroundImageUrl = "",
             onCommunityCardClick = {},
             communityId = ""
         )

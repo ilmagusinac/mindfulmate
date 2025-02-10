@@ -2,12 +2,10 @@ package com.example.mindfulmate.presentation.view_model.community.community_home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mindfulmate.R
 import com.example.mindfulmate.domain.usecase.community.GetAllCommunitiesUseCase
 import com.example.mindfulmate.domain.usecase.community.GetUserCommunities
 import com.example.mindfulmate.presentation.ui.component.util.SearchItem
 import com.example.mindfulmate.presentation.ui.screen.community.util.CommunitySectionParams
-import com.example.mindfulmate.presentation.ui.screen.community.util.TopCommunityProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,29 +34,6 @@ class CommunityHomeViewModel @Inject constructor(
     private val _searchCommunities = MutableStateFlow<List<SearchItem>>(emptyList())
     val searchCommunities: StateFlow<List<SearchItem>> = _searchCommunities.asStateFlow()
 
-    /*
-    fun fetchCommunities() {
-        _uiState.value = CommunityHomeUiState.Loading
-        viewModelScope.launch {
-            try {
-                val communities = getAllCommunitiesUseCase.invoke()
-                println("communities:$communities")
-                val communitiesRow = communities.map { community ->
-                    CommunitySectionParams(
-                        title = community.communityName,
-                        membersCount = community.membersCount.toString(),
-                        //imageRes = community.profilePictureUrl,
-                        //onViewCommunityClick = { community -> }
-                    )
-                }
-                _communitiesRow.value = communitiesRow
-                _uiState.value = CommunityHomeUiState.Success
-            } catch (e: Exception) {
-                _uiState.value = CommunityHomeUiState.Failure(e.message ?: "Unknown error")
-            }
-        }
-    }*/
-
     fun fetchCommunities(onCommunityClick: (String) -> Unit) {
         _uiState.value = CommunityHomeUiState.Loading
         viewModelScope.launch {
@@ -69,6 +44,8 @@ class CommunityHomeViewModel @Inject constructor(
                     CommunitySectionParams(
                         title = community.communityName,
                         membersCount = community.membersCount.toString(),
+                        profileImageUrl = community.profilePicture,
+                        backgroundImageUrl = community.backgroundPicture,
                         onViewCommunityClick = { onCommunityClick(community.id) }
                     )
                 }
@@ -85,11 +62,14 @@ class CommunityHomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val allCommunities = getAllCommunitiesUseCase.invoke()
-                val topCommunities = allCommunities.filter { it.membersCount > 5 }
+                val topCommunities = allCommunities.filter { it.membersCount > 50 }
 
                 val topCommunitiesRow = topCommunities.map { community ->
                     CommunitySectionParams(
                         title = community.communityName,
+                        profileImageUrl = community.profilePicture,
+                        backgroundImageUrl = community.backgroundPicture,
+                        membersCount = community.membersCount.toString(),
                         onViewCommunityClick = { onCommunityClick(community.id) }
                     )
                 }
@@ -111,7 +91,8 @@ class CommunityHomeViewModel @Inject constructor(
                     CommunitySectionParams(
                         title = community.communityName,
                         membersCount = community.membersCount.toString(),
-                        //imageRes = community.profilePictureUrl,
+                        profileImageUrl = community.profilePicture,
+                        backgroundImageUrl = community.backgroundPicture,
                         onViewCommunityClick = { onCommunityClick(community.id) }
                     )
                 }
@@ -131,7 +112,8 @@ class CommunityHomeViewModel @Inject constructor(
                 _searchCommunities.value = communities.map { pair ->
                     SearchItem(
                         id = pair.id,
-                        label = pair.communityName
+                        label = pair.communityName,
+                        placeholderRes = pair.profilePicture
                     )
                 }
             } catch (e: Exception) {

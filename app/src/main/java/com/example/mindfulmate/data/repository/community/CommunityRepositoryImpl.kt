@@ -58,4 +58,23 @@ class CommunityRepositoryImpl @Inject constructor(
     override suspend fun isPostLikedByUser(postId: String): Boolean {
         return communityService.isPostLikedByUser(postId)
     }
+
+    override suspend fun deletePost(communityId: String, postId: String) =
+        communityService.deletePost(communityId, postId)
+
+    override suspend fun editPost(communityId: String, postId: String, newTitle: String, newBody: String) =
+        communityService.editPost(communityId, postId, newTitle, newBody)
+
+    override suspend fun fetchUsername(userId: String): String? {
+        return communityService.fetchUsername(userId)
+    }
+
+    override suspend fun getCurrentUserId(): String =
+        communityService.getCurrentUserId()
+
+    override suspend fun deleteComment(communityId: String, postId: String, commentId: String) =
+        communityService.deleteComment(communityId, postId, commentId)
+
+    override suspend fun editComment(communityId: String, postId: String, commentId: String, newCommentText: String) =
+        communityService.editComment(communityId, postId, commentId, newCommentText)
 }

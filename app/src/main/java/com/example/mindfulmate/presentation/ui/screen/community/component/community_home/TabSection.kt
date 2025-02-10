@@ -97,7 +97,7 @@ fun TabSection(
                             CommunitySection(
                                 title = section.title,
                                 membersCount = section.membersCount,
-                                imageRes = section.imageRes,
+                                backgroundImage = section.backgroundImageUrl,
                                 onViewCommunityClick = { communityId ->
                                     section.onViewCommunityClick(communityId)
                                 },
@@ -126,7 +126,7 @@ fun TabSection(
                             CommunitySection(
                                 title = section.title,
                                 membersCount = section.membersCount,
-                                imageRes = section.imageRes,
+                                backgroundImage = section.backgroundImageUrl,
                                 onViewCommunityClick = { communityId ->
                                     section.onViewCommunityClick(communityId)
                                 },
@@ -149,13 +149,13 @@ private fun TabSectionPreview() {
             CommunitySectionParams(
                 title = "Community A",
                 membersCount = "150",
-                imageRes = R.drawable.ic_splash,
+                backgroundImageUrl = "R.drawable.ic_splash",
                 onViewCommunityClick = {}
             ),
             CommunitySectionParams(
                 title = "Community B",
                 membersCount = "300",
-                imageRes = R.drawable.ic_launcher_background,
+                backgroundImageUrl = "R.drawable.ic_launcher_background",
                 onViewCommunityClick = {}
             )
         )
@@ -164,13 +164,13 @@ private fun TabSectionPreview() {
             CommunitySectionParams(
                 title = "My Community X",
                 membersCount = "75",
-                imageRes = R.drawable.ic_launcher_background,
+                backgroundImageUrl = "R.drawable.ic_launcher_background",
                 onViewCommunityClick = {}
             ),
             CommunitySectionParams(
                 title = "My Community Y",
                 membersCount = "120",
-                imageRes = R.drawable.ic_splash,
+                backgroundImageUrl = "R.drawable.ic_splash",
                 onViewCommunityClick = {}
             )
         )

@@ -23,7 +23,9 @@ import com.example.mindfulmate.presentation.ui.screen.community.CommunityHomeScr
 import com.example.mindfulmate.presentation.ui.screen.community.CommunityPostScreen
 import com.example.mindfulmate.presentation.ui.screen.community.CommunityScreen
 import com.example.mindfulmate.presentation.ui.screen.community.CommunityWritePostScreen
+import com.example.mindfulmate.presentation.ui.screen.community.EditPostScreen
 import com.example.mindfulmate.presentation.ui.screen.daily_checkin.DailyCheckInScreen
+import com.example.mindfulmate.presentation.ui.screen.emergency_contact.EmergencyContactScreen
 import com.example.mindfulmate.presentation.ui.screen.emotional_analytics.MoodAnalyticsScreen
 import com.example.mindfulmate.presentation.ui.screen.help_support.HelpAndSupportScreen
 import com.example.mindfulmate.presentation.ui.screen.home.HomeScreen
@@ -106,10 +108,12 @@ fun NavGraph(
                 viewModel = hiltViewModel(),
                 onCommunityClick = { communityId ->
                     navController.navigate(Screen.Community.createRoute(communityId))
+                },
+                onSearchItemClick = { searchItem ->
+                    navController.navigate(Screen.Community.createRoute(searchItem.id))
                 }
             )
         }
-
         composable(route = Screen.Profile.route) {
             ProfileScreen(
                 viewModel = hiltViewModel(),
@@ -135,7 +139,8 @@ fun NavGraph(
         composable(
             route = Screen.Chat("{chatId}").route
         ) { backStackEntry ->
-            val chatId = backStackEntry.arguments?.getString("chatId") ?: throw IllegalArgumentException("Chat ID is missing")
+            val chatId = backStackEntry.arguments?.getString("chatId")
+                ?: throw IllegalArgumentException("Chat ID is missing")
 
             ChatScreen(
                 viewModel = hiltViewModel(),
@@ -152,6 +157,7 @@ fun NavGraph(
                 onEditCredentialsClick = { navController.navigate(Screen.EditCredential.route) },
                 onAboutAppClick = { navController.navigate(Screen.AboutApp.route) },
                 onHelpSupportClick = { navController.navigate(Screen.HelpAndSupport.route) },
+                onEmergencyContactSupportClick = { navController.navigate(Screen.EmergencyContact.route) },
                 navigate = {
                     navController.navigate(Screen.Welcome.route) {
                         popUpTo(0) { inclusive = true }
@@ -164,7 +170,7 @@ fun NavGraph(
             EditCredentialScreen(
                 viewModel = hiltViewModel(),
                 onGoBackClick = { navController.navigate(Screen.Settings.route) },
-                onDeleteAccountClick = { navController.navigate(Screen.DeleteAccount.route) },
+                onDeleteAccountClick = { navController.navigate(Screen.Welcome.route) },
                 navigate = { navController.navigate(Screen.Welcome.route) }
             )
         }
@@ -195,15 +201,12 @@ fun NavGraph(
             )
         }
         composable(route = Screen.AboutApp.route) {
-            AboutAppScreen(
-                onGoBackClick = { navController.navigate(Screen.Settings.route) }
-            )
+            AboutAppScreen(onGoBackClick = { navController.navigate(Screen.Settings.route) })
         }
         composable(route = Screen.HelpAndSupport.route) {
             HelpAndSupportScreen(
                 viewModel = hiltViewModel(),
                 onGoBackClick = { navController.navigate(Screen.Settings.route) },
-
             )
         }
         composable(route = Screen.DailyCheckIn.route) {
@@ -239,6 +242,12 @@ fun NavGraph(
                 onNewPostClick = { navController.navigate(Screen.WritePost.createRoute(communityId)) },
                 onNavigateToPost = { communityId, postId ->
                     navController.navigate(Screen.CommunityPost.createRoute(communityId, postId))
+                },
+                onNavigateToEdit = { communityId, postId ->
+                    navController.navigate(Screen.EditPost.createRoute(communityId, postId))
+                },
+                onChatClicked = { chatId ->
+                    navController.navigate(Screen.Chat.createRoute(chatId))
                 }
             )
         }
@@ -258,19 +267,47 @@ fun NavGraph(
                 viewModel = hiltViewModel(),
                 communityId = communityId,
                 postId = postId,
-                onGoBackClick = { navController.popBackStack() }
+                onGoBackClick = { navController.popBackStack() },
+                onChatClicked = { chatId ->
+                    navController.navigate(Screen.Chat.createRoute(chatId))
+                }
             )
         }
         composable(
             route = Screen.WritePost("{communityId}").route,
             arguments = listOf(navArgument("communityId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val communityId = backStackEntry.arguments?.getString("communityId") ?: return@composable
+            val communityId =
+                backStackEntry.arguments?.getString("communityId") ?: return@composable
             CommunityWritePostScreen(
                 viewModel = hiltViewModel(),
                 communityId = communityId,
                 onCloseClick = { navController.popBackStack() },
                 navigate = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route = Screen.EditPost("{communityId}", "{postId}").route,
+            arguments = listOf(
+                navArgument("communityId") { type = NavType.StringType },
+                navArgument("postId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val communityId = backStackEntry.arguments?.getString("communityId")!!
+            val postId = backStackEntry.arguments?.getString("postId")!!
+
+            EditPostScreen(
+                viewModel = hiltViewModel(),
+                communityId = communityId,
+                postId = postId,
+                onGoBackClick = { navController.popBackStack() },
+                navigate = { navController.popBackStack() }
+            )
+        }
+        composable(route = Screen.EmergencyContact.route) {
+            EmergencyContactScreen(
+                viewModel = hiltViewModel(),
+                onGoBackClick = { navController.popBackStack() }
             )
         }
     }

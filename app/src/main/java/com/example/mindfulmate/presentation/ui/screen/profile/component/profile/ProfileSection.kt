@@ -23,6 +23,7 @@ import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 
 @Composable
 fun ProfileSection(
+    imageUrl: String,
     firstName: String,
     lastName: String,
     username: String,
@@ -33,7 +34,7 @@ fun ProfileSection(
         modifier = modifier.fillMaxWidth()
     ) {
         MindfulMateProfileImage(
-            imageUrl = null,
+            imageUrl = imageUrl,
             placeholderRes = R.drawable.ic_profile,
             backgroundColor = DuskyBlue,
             size = dimensionResource(id = R.dimen.icon_xxlarge),
@@ -64,6 +65,7 @@ fun ProfileSection(
 private fun ProfileSectionPreview() {
     MindfulMateTheme {
         ProfileSection(
+            imageUrl = "https://hips.hearstapps.com/hmg-prod/images/dahlia-1508785047.jpg?crop=1.00xw:0.669xh;0,0.0136xh&resize=980:*",
             firstName = "Ilma",
             lastName = "Gusinac",
             username = "username"

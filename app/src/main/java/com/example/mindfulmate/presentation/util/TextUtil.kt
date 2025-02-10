@@ -1,6 +1,5 @@
 package com.example.mindfulmate.presentation.util
 
-import androidx.compose.runtime.remember
 import com.example.mindfulmate.presentation.ui.component.util.SearchItem
 
 fun String.truncateWords(): String {

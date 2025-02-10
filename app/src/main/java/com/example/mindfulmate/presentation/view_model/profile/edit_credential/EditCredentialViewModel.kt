@@ -3,8 +3,11 @@ package com.example.mindfulmate.presentation.view_model.profile.edit_credential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mindfulmate.domain.repository.user.UserRepository
+import com.example.mindfulmate.domain.usecase.user.DeleteUserUseCase
 import com.example.mindfulmate.domain.usecase.user.GetUserUseCase
 import com.example.mindfulmate.domain.usecase.user.UpdateUserUseCase
+import com.example.mindfulmate.presentation.view_model.profile.delete_account.DeleteAccountNavigationEvent
+import com.example.mindfulmate.presentation.view_model.profile.delete_account.DeleteAccountUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,13 +22,16 @@ import javax.inject.Inject
 class EditCredentialViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val updateUserUseCase: UpdateUserUseCase,
-    private val getUserUseCase: GetUserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val deleteUserUseCase: DeleteUserUseCase
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<EditCredentialUiState> = MutableStateFlow(EditCredentialUiState.Init)
+    private val _uiState: MutableStateFlow<EditCredentialUiState> =
+        MutableStateFlow(EditCredentialUiState.Init)
     val uiState: StateFlow<EditCredentialUiState> = _uiState.asStateFlow()
 
-    private val _navigationEvent: Channel<EditCredentialNavigationEvent> = Channel(Channel.CONFLATED)
+    private val _navigationEvent: Channel<EditCredentialNavigationEvent> =
+        Channel(Channel.CONFLATED)
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
     private var _resetEmail: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -40,6 +46,12 @@ class EditCredentialViewModel @Inject constructor(
     private val _isEmailPasswordEnabled = MutableStateFlow(false)
     val isEmailPasswordEnabled: StateFlow<Boolean> = _isEmailPasswordEnabled.asStateFlow()
 
+    private val _isDeleteAccountVisible = MutableStateFlow(false)
+    val isDeleteAccountVisible: StateFlow<Boolean> = _isDeleteAccountVisible.asStateFlow()
+
+    private val _toastMessage = Channel<String>(Channel.CONFLATED)
+    val toastMessage = _toastMessage.receiveAsFlow()
+
     fun validateEmail(email: String) {
         _isEmailEnabled.value = email.isNotBlank()
     }
@@ -49,7 +61,8 @@ class EditCredentialViewModel @Inject constructor(
         newEmail: String,
         password: String
     ) {
-        _isEmailPasswordEnabled.value = email.isNotBlank() && newEmail.isNotBlank() && password.isNotBlank()
+        _isEmailPasswordEnabled.value =
+            email.isNotBlank() && newEmail.isNotBlank() && password.isNotBlank()
     }
 
     fun resetPassword(emailAddress: String) {
@@ -108,6 +121,29 @@ class EditCredentialViewModel @Inject constructor(
     private fun triggerNavigation(event: EditCredentialNavigationEvent) {
         viewModelScope.launch {
             _navigationEvent.send(event)
+        }
+    }
+
+    fun showDeleteAccountPopup() {
+        _isDeleteAccountVisible.value = true
+    }
+
+    fun hideDeleteAccountPopup() {
+        _isDeleteAccountVisible.value = false
+    }
+
+    fun confirmDeleteAccount() {
+        viewModelScope.launch {
+            try {
+                deleteUserUseCase()
+                userRepository.deleteAccount()
+                _uiState.update { EditCredentialUiState.Success }
+                hideDeleteAccountPopup()
+                _toastMessage.send("Account Deleted Successfully")
+                triggerNavigation(EditCredentialNavigationEvent.NavigateDeleted)
+            } catch (e: Exception) {
+                _uiState.update { EditCredentialUiState.Failure("Failed to delete account: ${e.localizedMessage}") }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.mindfulmate.domain.model.community
 
 data class Post(
     val postId: String = "",
+    val userId: String = "",
     val username: String = "",
     val date: com.google.firebase.Timestamp? = null,
     val title: String = "",

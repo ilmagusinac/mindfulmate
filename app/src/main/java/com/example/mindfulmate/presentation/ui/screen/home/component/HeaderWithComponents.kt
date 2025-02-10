@@ -15,17 +15,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -35,19 +30,14 @@ import com.example.mindfulmate.presentation.theme.DuskyBlue
 import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
-import com.example.mindfulmate.presentation.ui.component.MindfulMateSearchField
-import com.example.mindfulmate.presentation.ui.component.util.SearchItem
 import com.example.mindfulmate.presentation.util.innerShadow
 
 @Composable
 fun HeaderWithComponents(
     username: String,
-    communities: TextFieldValue,
-    allSearchItems: List<SearchItem>,
-    onSearchCommunitiesChange: (TextFieldValue) -> Unit,
+    profileImage: String,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
-    onSearchItemClick: (SearchItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -55,7 +45,7 @@ fun HeaderWithComponents(
         Column(
             modifier = Modifier.padding(
                 horizontal = dimensionResource(id = R.dimen.padding_xxmedium),
-                vertical = dimensionResource(id = R.dimen.padding_xxmedium)
+                vertical = dimensionResource(id = R.dimen.padding_xxxmedium)
             ),
             horizontalAlignment = Alignment.Start
         ) {
@@ -68,12 +58,12 @@ fun HeaderWithComponents(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 MindfulMateProfileImage(
-                    imageUrl = null,
+                    imageUrl = profileImage,
                     placeholderRes = R.drawable.ic_profile,
                     modifier = Modifier.clickable { onProfileClick() }
                 )
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxmedium)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxxmedium)))
             Text(
                 text = stringResource(id = R.string.home_hi_section) + username,
                 style = MaterialTheme.typography.titleLarge.copy(
@@ -82,7 +72,7 @@ fun HeaderWithComponents(
                     color = DuskyWhite
                 )
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
             Text(
                 text = stringResource(id = R.string.home_subtitle),
                 style = MaterialTheme.typography.bodyMedium.copy(
@@ -91,15 +81,6 @@ fun HeaderWithComponents(
                     lineHeight = 20.sp,
                     color = DuskyWhite
                 )
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxmedium)))
-            //SEARCH BAR
-            MindfulMateSearchField(
-                text = communities,
-                placeholder = stringResource(id = R.string.search_text_field_placeholder),
-                allSearchItems = allSearchItems,
-                onTextValueChange = onSearchCommunitiesChange,
-                onSearchItemClick = onSearchItemClick
             )
         }
     }
@@ -137,24 +118,13 @@ private fun BackgroundHeaderPreview() {
 @Composable
 private fun HeaderPreview() {
     MindfulMateTheme {
-        var textState by remember { mutableStateOf(TextFieldValue("")) }
-        val searchItems = listOf(
-            SearchItem("123", "JohnDoe", R.drawable.ic_profile),
-            SearchItem("123", "JaneDoe", R.drawable.ic_profile),
-            SearchItem("123", "OtherUser", R.drawable.ic_profile),
-            SearchItem("123", "SampleUser", R.drawable.ic_profile),
-            SearchItem("123", "AnotherUser", R.drawable.ic_profile)
-        )
         Box {
             Column(modifier = Modifier.fillMaxSize()) {
                 HeaderWithComponents(
                     username = "username",
-                    communities = textState,
-                    allSearchItems = searchItems,
-                    onSearchCommunitiesChange = { textState = it },
+                    profileImage = "",
                     onMenuClick = {},
-                    onProfileClick = {},
-                    onSearchItemClick = {}
+                    onProfileClick = {}
                 )
             }
         }

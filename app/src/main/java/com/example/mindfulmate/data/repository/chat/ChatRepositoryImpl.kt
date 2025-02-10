@@ -13,7 +13,7 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun getMessages(chatId: String): List<Message> =
         chatService.getMessages(chatId)
 
-    override suspend fun sendMessage(chatId: String, message: String): Boolean =
+    override suspend fun sendMessage(chatId: String, message: String): String? =
         chatService.sendMessage(chatId, message)
 
     override suspend fun listenForMessages(chatId: String, onUpdate: (List<Message>) -> Unit) {
@@ -33,4 +33,25 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun deleteChat(chatId: String) =
         chatService.deleteChat(chatId)
+
+    override suspend fun getCurrentUserId(): String =
+        chatService.getCurrentUserId()
+
+    /*override suspend fun markMessagesAsRead(chatId: String) =
+        chatService.markMessagesAsRead(chatId)*/
+    override suspend fun markMessagesAsRead(chatId: String, userId: String) =
+        chatService.markMessagesAsRead(chatId, userId)
+
+    override suspend fun editMessage(chatId: String, messageId: String, newText: String): Boolean =
+        chatService.editMessage(chatId, messageId, newText)
+
+    override suspend fun deleteMessage(chatId: String, messageId: String): Boolean =
+        chatService.deleteMessage(chatId, messageId)
+
+    override suspend fun listenForUnreadMessages(onUpdate: (Int) -> Unit) {
+        chatService.listenForUnreadMessages(onUpdate)
+    }
+
+    override suspend fun fetchUnreadChatsCount(userId: String, onUpdate: (Int) -> Unit) =
+        chatService.fetchUnreadChatsCount(userId, onUpdate)
 }

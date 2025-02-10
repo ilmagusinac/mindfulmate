@@ -1,7 +1,10 @@
 [versions]
 agp = "8.7.0"
 androidxHiltCompiler = "1.0.0"
+coilCompose = "2.3.0"
+coilNetwork = "2.3.0"
 common = "18.11.0"
+core = "1.6.1"
 coreSplashscreen = "1.0.1"
 foundationLayout = "1.7.5"
 hiltAndroid = "2.51.1"
@@ -26,6 +29,7 @@ firebaseFirestoreKtx = "25.1.1"
 uiTestAndroid = "1.7.5"
 
 [libraries]
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "foundationLayout" }
@@ -38,6 +42,8 @@ androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fr
 androidx-lifecycle-runtime-ktx-v261 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-network = { module = "io.coil-kt:coil-network", version.ref = "coilNetwork" }
 common = { module = "com.google.mlkit:common", version.ref = "common" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }

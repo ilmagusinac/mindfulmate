@@ -1,8 +1,5 @@
 package com.example.mindfulmate.presentation.ui.screen.community.util
 
-import androidx.annotation.DrawableRes
-import com.example.mindfulmate.R
-
 data class CommunityPostParams(
     val postId: String = "",
     val username: String = "",
@@ -11,6 +8,10 @@ data class CommunityPostParams(
     val body: String = "",
     val likesCount: String = "",
     val commentsCount: String = "",
-    @DrawableRes val profilePictureUrl: Int = R.drawable.ic_profile,
-    val onCommentsClick: () -> Unit
+    val isOwner: Boolean = false,
+    val profilePictureUrl: String? = null,
+    val onCommentsClick: () -> Unit,
+    val onEditClick: () -> Unit,
+    val onDeleteClick: () -> Unit,
+    val onUserClick: () -> Unit
 )

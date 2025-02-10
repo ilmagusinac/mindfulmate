@@ -103,7 +103,7 @@ private fun MoodAnalyticsScreen(
             .verticalScroll(rememberScrollState())
     ) {
         MoodAnalyticsHeaderSection(onGoBackClick = onGoBackClick)
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxxmedium)))
         Text(
             text = stringResource(id = R.string.mood_analytics_title),
             style = MaterialTheme.typography.titleMedium.copy(
@@ -113,7 +113,7 @@ private fun MoodAnalyticsScreen(
                 textAlign = TextAlign.Start
             )
         )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxdefault)))
         Text(
             text = stringResource(id = R.string.mood_analytics_label),
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -122,7 +122,7 @@ private fun MoodAnalyticsScreen(
                 textAlign = TextAlign.Start
             )
         )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxmedium)))
         if (pieData.isEmpty() || moodData.isEmpty()) {
             Text(
                 text = stringResource(id = R.string.no_daily_check_in),

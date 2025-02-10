@@ -19,4 +19,10 @@ interface CommunityService {
     suspend fun likePost(communityId: String, postId: String)
     suspend fun unlikePost(communityId: String, postId: String)
     suspend fun isPostLikedByUser(postId: String): Boolean
+    suspend fun deletePost(communityId: String, postId: String)
+    suspend fun editPost(communityId: String, postId: String, newTitle: String, newBody: String)
+    suspend fun fetchUsername(userId: String): String?
+    suspend fun getCurrentUserId(): String
+    suspend fun deleteComment(communityId: String, postId: String, commentId: String)
+    suspend fun editComment(communityId: String, postId: String, commentId: String, newCommentText: String)
 }

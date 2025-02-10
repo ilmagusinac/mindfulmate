@@ -1,6 +1,8 @@
 package com.example.mindfulmate.presentation.ui.screen.chat.component.chat
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,16 +28,31 @@ import com.example.mindfulmate.presentation.theme.DuskyBlue
 import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatMessageRow(
     currentUser: String?,
     messageModel: Message,
+    onEditMessage: (Message) -> Unit,
+    onDeleteMessage: (Message) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isSecondUser = messageModel.senderId != currentUser
+    val haptics = LocalHapticFeedback.current
 
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(modifier = modifier.fillMaxWidth()) {
+        Box(modifier = modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { /* Regular click can remain empty or handle other actions */ },
+                onLongClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    if (!isSecondUser) {
+                        onEditMessage(messageModel)
+                    }
+                }
+            )
+        ) {
             Box(
                 modifier = Modifier
                     .align(if (isSecondUser) Alignment.BottomStart else Alignment.BottomEnd)
@@ -51,16 +70,14 @@ fun ChatMessageRow(
                     .background(if (isSecondUser) DuskyBlue else Blue)
                     .padding(dimensionResource(id = R.dimen.padding_default))
             ) {
-                SelectionContainer {
-                    Text(
-                        text = messageModel.text,
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = DuskyWhite,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal
-                        )
+                Text(
+                    text = messageModel.text,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = DuskyWhite,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal
                     )
-                }
+                )
             }
         }
     }
@@ -78,7 +95,9 @@ private fun MessageRowPreview() {
                 timestamp = null,
                 isRead = true
             ),
-            currentUser = "user1"
+            currentUser = "user1",
+            onDeleteMessage = {},
+            onEditMessage = {}
         )
     }
 }
@@ -95,7 +114,9 @@ private fun MessageRowSecondUserPreview() {
                 timestamp = null,
                 isRead = true
             ),
-            currentUser = ""
+            currentUser = "",
+            onEditMessage = {},
+            onDeleteMessage = {}
         )
     }
 }

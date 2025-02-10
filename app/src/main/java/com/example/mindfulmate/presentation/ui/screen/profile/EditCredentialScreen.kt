@@ -1,5 +1,6 @@
 package com.example.mindfulmate.presentation.ui.screen.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -25,6 +27,7 @@ import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.DuskyBlue
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.LoadingPlaceholder
+import com.example.mindfulmate.presentation.ui.screen.community.DeleteContentPopUp
 import com.example.mindfulmate.presentation.ui.screen.profile.util.ContentRow
 import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_credential.EditCredentialHeaderSection
 import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_credential.EditCredentialInformationSection
@@ -53,10 +56,19 @@ fun EditCredentialScreen(
 
     val isEditPasswordEnabled by viewModel.isEmailEnabled.collectAsStateWithLifecycle()
     val isEditEmailPasswordEnabled by viewModel.isEmailPasswordEnabled.collectAsStateWithLifecycle()
+    val isDeleteAccountVisible by viewModel.isDeleteAccountVisible.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(viewModel) {
+        viewModel.toastMessage.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     NavigationEventHandler(
         viewModel = viewModel,
-        navigate = navigate
+        navigate = navigate,
+        navigateDeleted = onDeleteAccountClick
     )
 
     LaunchedEffect(uiState) {
@@ -131,10 +143,19 @@ fun EditCredentialScreen(
                 },
                 onEditPasswordClick = { viewModel.resetPassword(emailState.text) },
                 onGoBackClick = onGoBackClick,
-                onDeleteAccountClick = onDeleteAccountClick,
+                onDeleteAccountClick = { viewModel.showDeleteAccountPopup() },
                 modifier = modifier
             )
         }
+    }
+
+    if(isDeleteAccountVisible) {
+        DeleteContentPopUp(
+            deleteTitle = "Delete Account",
+            deleteDialog = "Sorry to hear this :(. Are you sure of this action?",
+            onCancelClick = { viewModel.hideDeleteAccountPopup() },
+            onDeleteClick = { viewModel.confirmDeleteAccount() }
+        )
     }
 }
 
@@ -142,12 +163,16 @@ fun EditCredentialScreen(
 private fun NavigationEventHandler(
     viewModel: EditCredentialViewModel,
     navigate: () -> Unit,
+    navigateDeleted: () -> Unit
 ) {
     LaunchedEffect(viewModel) {
         viewModel.navigationEvent.collect { navigationEvent ->
             when (navigationEvent) {
                 is EditCredentialNavigationEvent.Navigate -> {
                     navigate()
+                }
+                is EditCredentialNavigationEvent.NavigateDeleted -> {
+                    navigateDeleted()
                 }
             }
         }

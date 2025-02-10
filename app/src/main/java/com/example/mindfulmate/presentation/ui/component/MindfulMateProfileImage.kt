@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
@@ -26,7 +26,7 @@ import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 @Composable
 fun MindfulMateProfileImage(
     modifier: Modifier = Modifier,
-    imageUrl: String? = null,
+    imageUrl: String? = "",
     @DrawableRes placeholderRes: Int = R.drawable.ic_profile,
     backgroundColor: Color = Color.White,
     size: Dp = 28.dp,
@@ -40,7 +40,7 @@ fun MindfulMateProfileImage(
             .padding(padding),
         contentAlignment = Alignment.Center
     ) {
-        if (imageUrl != null) {
+        if (imageUrl != "") {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
@@ -65,8 +65,18 @@ fun MindfulMateProfileImage(
 private fun ProfileImagePreview() {
     MindfulMateTheme {
         MindfulMateProfileImage(
-            imageUrl = null,
+            imageUrl = "https://hips.hearstapps.com/hmg-prod/images/dahlia-1508785047.jpg?crop=1.00xw:0.669xh;0,0.0136xh&resize=980:*",
             placeholderRes = R.drawable.ic_profile
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NoProfileImagePreview() {
+    MindfulMateTheme {
+        MindfulMateProfileImage(
+            imageUrl = ""
         )
     }
 }

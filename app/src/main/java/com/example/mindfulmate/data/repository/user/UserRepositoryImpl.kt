@@ -1,5 +1,6 @@
 package com.example.mindfulmate.data.repository.user
 
+import android.net.Uri
 import com.example.mindfulmate.data.service.auth.AccountService
 import com.example.mindfulmate.data.service.user.UserService
 import com.example.mindfulmate.domain.model.user.User
@@ -38,4 +39,9 @@ class UserRepositoryImpl @Inject constructor(
         accountService.updateEmail(email, password, newEmail)
 
     override suspend fun getAllUsers(): List<Pair<String, String>> = userService.getAllUsers()
+    override suspend fun uploadProfileImage(imageUri: Uri): String =
+        userService.uploadProfileImage(imageUri)
+
+    override suspend fun getUsers(): List<User> = userService.getUsers()
+    override suspend fun getUserById(userId: String): User = userService.getUserById(userId)
 }

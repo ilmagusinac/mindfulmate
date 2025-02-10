@@ -33,6 +33,7 @@ import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMatePopup
 import com.example.mindfulmate.presentation.ui.component.MindfulMatePopupDialog
+import com.example.mindfulmate.presentation.ui.component.MindfulMateProfileImage
 import com.example.mindfulmate.presentation.ui.component.util.PopupMenuItem
 import com.example.mindfulmate.presentation.ui.screen.profile.component.edit_credential.IconPlacement
 import com.example.mindfulmate.presentation.util.DialogButtonConfig
@@ -43,7 +44,7 @@ fun ChatHeaderSection(
     onBackButtonClick: () -> Unit,
     onDeleteChatClick: () -> Unit,
     modifier: Modifier = Modifier,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_profile
+    imageUrl: String? = null
 ) {
     var isPopupExpanded by remember { mutableStateOf(false) }
     var isPopupDialogExpanded by remember { mutableStateOf(false) }
@@ -71,9 +72,13 @@ fun ChatHeaderSection(
                 .clickable { onBackButtonClick() }
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_xmedium)))
-        IconPlacement(
+        /*IconPlacement(
             placeholderRes = placeholderRes,
             backgroundColor = DuskyWhite
+        )*/
+        MindfulMateProfileImage(
+            imageUrl = imageUrl,
+            size = dimensionResource(id = R.dimen.icon_large),
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_xdefault)))
         Text(
@@ -105,12 +110,13 @@ fun ChatHeaderSection(
                 label = stringResource(R.string.delete_conversation),
                 icon = painterResource(id = R.drawable.ic_trash_bin),
                 onClick = {
+                    onDeleteChatClick()
                     isPopupDialogExpanded = true
                     isPopupExpanded = false
                 }
             )
         )
-    )
+    )/*
     if (isPopupDialogExpanded) {
         MindfulMatePopupDialog(
             onDismissRequest = { isPopupDialogExpanded = false },
@@ -130,7 +136,7 @@ fun ChatHeaderSection(
             ),
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_default))
         )
-    }
+    }*/
 }
 
 @Preview

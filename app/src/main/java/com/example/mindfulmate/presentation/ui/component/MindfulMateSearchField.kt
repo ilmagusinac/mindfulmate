@@ -1,5 +1,6 @@
 package com.example.mindfulmate.presentation.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,14 +30,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.mindfulmate.R
+import com.example.mindfulmate.presentation.theme.DuskyBlue
 import com.example.mindfulmate.presentation.theme.DuskyGrey
+import com.example.mindfulmate.presentation.theme.DuskyWhite
 import com.example.mindfulmate.presentation.theme.Grey
 import com.example.mindfulmate.presentation.theme.LightGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
@@ -154,7 +163,35 @@ fun SearchResultItem(
             .padding(dimensionResource(id = R.dimen.padding_default))
             .clickable { onSearchItemClick(searchItem) }
     ) {
-        MindfulMateIconPlacement(placeholderRes = searchItem.placeholderRes)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(dimensionResource(id = R.dimen.icon_large))
+                .clip(CircleShape)
+                .background(DuskyGrey)
+                .padding(5.dp)
+        ) {
+            if (searchItem.placeholderRes != "") {
+                AsyncImage(
+                    model = searchItem.placeholderRes,
+                    contentDescription = "community image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(CircleShape)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_profile),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.icon_xlarge) / 2)
+                        .clip(CircleShape)
+                        .background(DuskyGrey),
+                    colorFilter = ColorFilter.tint(DuskyBlue)
+                )
+            }
+        }
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.spacing_default)))
         Text(
             text = searchItem.label,
@@ -184,11 +221,11 @@ private fun MindfulMateSearchFieldLeadingIconPreview() {
     MindfulMateTheme {
         var textState by remember { mutableStateOf(TextFieldValue("")) }
         val searchItems = listOf(
-            SearchItem("123", "JohnDoe", R.drawable.ic_profile),
-            SearchItem("123", "JaneDoe", R.drawable.ic_profile),
-            SearchItem("123", "OtherUser", R.drawable.ic_profile),
-            SearchItem("123", "SampleUser", R.drawable.ic_profile),
-            SearchItem("123", "AnotherUser", R.drawable.ic_profile)
+            SearchItem("123", "JohnDoe", "R.drawable.ic_profile"),
+            SearchItem("123", "JaneDoe", "R.drawable.ic_profile"),
+            SearchItem("123", "OtherUser", "R.drawable.ic_profile"),
+            SearchItem("123", "SampleUser", "R.drawable.ic_profile"),
+            SearchItem("123", "AnotherUser", "R.drawable.ic_profile")
         )
 
         Box {

@@ -24,6 +24,9 @@ class ChatViewModel @Inject constructor(
     private val _username = MutableStateFlow<String?>(null)
     val username: StateFlow<String?> = _username.asStateFlow()
 
+    private val _profileImage = MutableStateFlow<String?>(null)
+    val profileImage: StateFlow<String?> = _profileImage.asStateFlow()
+
     fun addMessage(message: MessageModel) {
         _messages.value = _messages.value + message
         println("MESSAGE ADD: $message")
@@ -56,6 +59,17 @@ class ChatViewModel @Inject constructor(
                 _username.value = currentUser.username
             } catch (e: Exception) {
                 _username.value = "unknown"
+            }
+        }
+    }
+
+    fun loadUserProfileImage() {
+        viewModelScope.launch {
+            try {
+                val currentUser = getUserUseCase()
+                _profileImage.value = currentUser.profileImageUrl
+            } catch (e: Exception) {
+                _profileImage.value = "unknown"
             }
         }
     }

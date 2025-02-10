@@ -3,10 +3,14 @@ package com.example.mindfulmate.presentation.ui.screen.profile.component.edit_pr
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mindfulmate.R
@@ -23,6 +27,8 @@ fun EditProfileInformationDetails(
     onLastNameValueChange: (TextFieldValue) -> Unit,
     onUsernameValueChange: (TextFieldValue) -> Unit,
     onNumberValueChange: (TextFieldValue) -> Unit,
+    usernameError: String? = null,
+    phoneError: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -46,6 +52,13 @@ fun EditProfileInformationDetails(
             placeholder = stringResource(id = R.string.enter_username),
             onTextValueChange = { onUsernameValueChange(it) }
         )
+        usernameError?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light)
+            )
+        }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_default)))
         MindfulMateRegistrationTextField(
             title = stringResource(id = R.string.number),
@@ -53,6 +66,13 @@ fun EditProfileInformationDetails(
             placeholder = stringResource(id = R.string.enter_number),
             onTextValueChange = { onNumberValueChange(it) }
         )
+        phoneError?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light)
+            )
+        }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_default)))
     }
 }

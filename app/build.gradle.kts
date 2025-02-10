@@ -83,6 +83,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-storage")
 
     //Authentication with Credential Manager
     implementation("com.google.android.gms:play-services-auth:21.2.0")
@@ -100,7 +101,11 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
     //Coil
-    implementation("io.coil-kt:coil-compose:2.3.0")
+    //implementation(libs.coil.compose)
+   // implementation(libs.coil.network)
+    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
+
 
     //WorkManager
     implementation("androidx.work:work-runtime-ktx:2.8.0")
@@ -110,6 +115,27 @@ dependencies {
 
     //Y-Charts
     implementation ("co.yml:ycharts:2.1.0")
+
+    // JUnit for unit testing
+    testImplementation ("junit:junit:4.13.2")
+
+    // MockK for mocking dependencies
+    testImplementation ("io.mockk:mockk:1.13.5")
+
+    // Kotlin Coroutines Test for coroutine-based testing
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+
+    // Truth for readable assertions
+    testImplementation ("com.google.truth:truth:1.1.3")
+
+    // Mock Web Server for API testing
+    testImplementation ("com.squareup.okhttp3:mockwebserver:4.9.3")
+
+    testImplementation ("org.robolectric:robolectric:4.10")
+
+   // androidTestImplementation (libs.androidx.core)
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -8,6 +8,7 @@ import com.example.mindfulmate.data.service.user.UserService
 import com.example.mindfulmate.data.service.user.UserServiceImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -42,9 +43,14 @@ abstract class ServiceModule {
 
         @Provides
         @Singleton
+        fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
+
+        @Provides
+        @Singleton
         fun provideFirestoreService(
             firestore: FirebaseFirestore,
-            auth: FirebaseAuth
-        ): UserService = UserServiceImpl(firestore, auth)
+            auth: FirebaseAuth,
+            storage: FirebaseStorage
+        ): UserService = UserServiceImpl(firestore, auth, storage)
     }
 }

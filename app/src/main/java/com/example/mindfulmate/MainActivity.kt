@@ -1,6 +1,7 @@
 package com.example.mindfulmate
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +31,7 @@ import com.example.mindfulmate.presentation.navigation.bottom_bar.BottomBarNavig
 import com.example.mindfulmate.presentation.navigation.drawer.Drawer
 import com.example.mindfulmate.presentation.navigation.drawer.DrawerShape
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
+import com.example.mindfulmate.presentation.view_model.chat.chat_home.ChatHomeViewModel
 import com.example.mindfulmate.presentation.view_model.main.MainViewModel
 import com.example.mindfulmate.presentation.work.daily_checkin.CheckInStateManager
 import com.example.mindfulmate.presentation.work.daily_checkin.NotificationPreferenceManager
@@ -81,7 +84,23 @@ fun BottomNavScaffold(
     mainViewModel: MainViewModel,
     showBottomBar: Boolean
 ) {
-    val bottomNavigationItems = BottomBarNavigationItems.items
+    val chatHomeViewModel: ChatHomeViewModel = hiltViewModel()
+    val unreadCount by chatHomeViewModel.unreadMessagesCount.collectAsStateWithLifecycle()
+    val currentUserId by chatHomeViewModel.currentUserId.collectAsStateWithLifecycle()
+
+    val bottomNavigationItems = BottomBarNavigationItems.items.map { item ->
+        if (item.route == Screen.ChatHome.route) {
+            item.copy(unreadCount = unreadCount)
+        } else item
+    }
+
+    LaunchedEffect(Unit) {
+        mainViewModel.loadUser()
+        if (currentUserId != null) {
+            chatHomeViewModel.fetchUnreadChatsCount()
+        }
+    }
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val currentBackStackEntry =
@@ -89,10 +108,12 @@ fun BottomNavScaffold(
     val currentRoute = currentBackStackEntry.value?.destination?.route
     val selectedItemIndex = bottomNavigationItems.indexOfFirst { it.route == currentRoute }
         .takeIf { it != -1 } ?: 0
-    val username by mainViewModel.username.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        mainViewModel.loadUser()
+    LaunchedEffect(mainViewModel) {
+        mainViewModel.toastMessage.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     ModalNavigationDrawer(

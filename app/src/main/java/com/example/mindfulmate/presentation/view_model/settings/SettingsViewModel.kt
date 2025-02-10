@@ -5,7 +5,6 @@ import android.util.Log
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +35,9 @@ class SettingsViewModel @Inject constructor(
     private val _navigationEvent: Channel<SettingsNavigationEvent> = Channel(Channel.CONFLATED)
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
+    private val _toastMessage = Channel<String>(Channel.CONFLATED)
+    val toastMessage = _toastMessage.receiveAsFlow()
+
     val isNotificationsEnabled: StateFlow<Boolean> = notificationPreferenceManager
         .isNotificationsEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
@@ -55,6 +57,7 @@ class SettingsViewModel @Inject constructor(
             try {
                 userRepository.signOut()
                 _uiState.update { SettingsUiState.Success(true) }
+                _toastMessage.send("Signed out Successfully!")
                 triggerNavigation(SettingsNavigationEvent.Navigate)
             } catch (e: Exception) {
                 _uiState.update { SettingsUiState.Failure("Sign-out failed: ${e.localizedMessage}") }
@@ -70,7 +73,8 @@ class SettingsViewModel @Inject constructor(
                 val settingsParams = SettingsParams(
                     firstName = currentUser.firstName,
                     lastName = currentUser.lastName,
-                    username = currentUser.username
+                    username = currentUser.username,
+                    profilePicture = currentUser.profileImageUrl
                 )
                 _uiState.update { SettingsUiState.Success(settingsParams = settingsParams) }
             } catch (e: Exception) {

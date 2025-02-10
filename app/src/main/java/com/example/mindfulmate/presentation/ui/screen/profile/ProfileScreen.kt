@@ -99,6 +99,7 @@ private fun ProfileScreen(
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xlarge)))
         ProfileSection(
+            imageUrl = profileParams.image,
             firstName = profileParams.firstName,
             lastName = profileParams.lastName,
             username = profileParams.username

@@ -11,39 +11,50 @@ import javax.inject.Inject
 class ChatServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
-): ChatService {
+) : ChatService {
 
-    override suspend fun sendMessage(chatId: String, message: String): Boolean {
-        val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
-        val messageData = mapOf(
-            "senderId" to userId,
-            "text" to message,
-            "timestamp" to FieldValue.serverTimestamp(),
-            "isRead" to false
-        )
+override suspend fun sendMessage(chatId: String, messageText: String): String? {
+    val senderId = auth.currentUser?.uid ?: throw Exception("User not logged in")
 
-        try {
-            firestore.collection("chats")
-                .document(chatId)
-                .collection("messages")
-                .add(messageData)
-                .await()
+    return try {
+        val chatRef = firestore.collection("chats").document(chatId)
 
-            firestore.collection("chats")
-                .document(chatId)
-                .update(
-                    mapOf(
-                        "lastMessage" to message,
-                        "lastMessageTimestamp" to FieldValue.serverTimestamp()
-                    )
-                ).await()
+        val chatSnapshot = chatRef.get().await()
+        val participants = chatSnapshot.get("participants") as? List<Map<String, String>>
 
-            return true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
+        if (participants == null) {
+            throw Exception("Participants not found")
         }
+
+        val recipientIds = participants.mapNotNull { it["userId"] }.filter { it != senderId }
+
+        val documentRef = chatRef.collection("messages")
+            .add(
+                mapOf(
+                    "senderId" to senderId,
+                    "text" to messageText,
+                    "timestamp" to FieldValue.serverTimestamp(),
+                    "isRead" to false
+                )
+            ).await()
+
+        documentRef.update("id", documentRef.id).await()
+
+        chatRef.update(
+            mapOf(
+                "lastMessage" to messageText,
+                "lastMessageTimestamp" to FieldValue.serverTimestamp(),
+                "hasUnreadMessages" to true,
+                "unreadBy" to recipientIds
+            )
+        ).await()
+
+        documentRef.id
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
+}
 
     override suspend fun getMessages(chatId: String): List<Message> {
         try {
@@ -113,6 +124,8 @@ class ChatServiceImpl @Inject constructor(
                 .await()
             val currentUsername = currentUserSnapshot.getString("username")
                 ?: throw Exception("Username not found for current user")
+            val currentUserProfilePicture = currentUserSnapshot.getString("profileImageUrl")
+                ?: "No current user profile picture"
 
             val otherUserSnapshot = firestore.collection("users")
                 .document(otherUserId)
@@ -120,16 +133,14 @@ class ChatServiceImpl @Inject constructor(
                 .await()
             val otherUsername = otherUserSnapshot.getString("username")
                 ?: throw Exception("Username not found for other user")
+            val otherUserProfilePicture =
+                otherUserSnapshot.getString("profileImageUrl") ?: "no other user profile picture"
+
 
             val snapshot = firestore.collection("chats")
                 .get()
                 .await()
 
-            snapshot.documents.forEach { document ->
-                val participants = document.get("participants") as? List<Map<String, String>>
-            }
-
-            // Check manually if there's a chat with both participants
             val existingChat = snapshot.documents.firstOrNull { document ->
                 val participants = document.get("participants") as? List<Map<String, String>>
                 participants != null &&
@@ -142,12 +153,21 @@ class ChatServiceImpl @Inject constructor(
             } else {
                 val newChat = mapOf(
                     "participants" to listOf(
-                        mapOf("userId" to currentUserId, "username" to currentUsername),
-                        mapOf("userId" to otherUserId, "username" to otherUsername)
+                        mapOf(
+                            "userId" to currentUserId,
+                            "username" to currentUsername,
+                            "profilePicture" to currentUserProfilePicture
+                        ),
+                        mapOf(
+                            "userId" to otherUserId,
+                            "username" to otherUsername,
+                            "profilePicture" to otherUserProfilePicture
+                        )
                     ),
-                    "lastMessage" to "",
+                    "lastMessage" to "No messages",
                     "lastMessageTimestamp" to FieldValue.serverTimestamp(),
-                    "hasUnreadMessages" to false
+                    "hasUnreadMessages" to false,
+                    "unreadBy" to emptyList<String>()
                 )
 
                 val chatRef = firestore.collection("chats").add(newChat).await()
@@ -156,16 +176,6 @@ class ChatServiceImpl @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             throw Exception("Failed to create or retrieve chat")
-        }
-    }
-
-    private suspend fun getOtherUsername(userId: String): String {
-        return try {
-            val userDoc = firestore.collection("users").document(userId).get().await()
-            userDoc.getString("username") ?: "Unknown"
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "Unknown"
         }
     }
 
@@ -199,4 +209,190 @@ class ChatServiceImpl @Inject constructor(
             throw Exception("Failed to delete chat: ${e.message}")
         }
     }
+/*
+    override suspend fun markMessagesAsRead(chatId: String) {
+        try {
+            val unreadMessages = firestore.collection("chats")
+                .document(chatId)
+                .collection("messages")
+                .whereEqualTo("isRead", false)
+                .get()
+                .await()
+
+            for (document in unreadMessages.documents) {
+                document.reference.update("isRead", true).await()
+            }
+
+            firestore.collection("chats")
+                .document(chatId)
+                .update("hasUnreadMessages", false)
+                .await()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }*/
+    override suspend fun markMessagesAsRead(chatId: String, userId: String) {
+        try {
+            val chatRef = firestore.collection("chats").document(chatId)
+
+            // ✅ Remove the user from `unreadBy`
+            chatRef.update(
+                mapOf(
+                    "unreadBy" to FieldValue.arrayRemove(userId)
+                )
+            ).await()
+
+            // ✅ Check if `unreadBy` is empty, then remove dot indicator
+            val chatSnapshot = chatRef.get().await()
+            val unreadByList = chatSnapshot.get("unreadBy") as? List<String> ?: emptyList()
+
+            if (unreadByList.isEmpty()) {
+                chatRef.update("hasUnreadMessages", false).await()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    override suspend fun editMessage(chatId: String, messageId: String, newText: String): Boolean {
+    return try {
+        val chatRef = firestore.collection("chats").document(chatId)
+        val messagesRef = chatRef.collection("messages")
+
+        messagesRef.document(messageId)
+            .update(
+                mapOf(
+                    "text" to newText,
+                    "timestamp" to com.google.firebase.Timestamp.now()
+                )
+            ).await()
+
+        val latestMessages = messagesRef
+            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .await()
+
+        val latestMessageDoc = latestMessages.documents.firstOrNull()
+        if (latestMessageDoc != null && latestMessageDoc.id == messageId) {
+            chatRef.update(
+                mapOf(
+                    "lastMessage" to newText,
+                    "lastMessageTimestamp" to com.google.firebase.Timestamp.now()
+                )
+            ).await()
+        }
+
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
+}
+
+
+
+    override suspend fun deleteMessage(chatId: String, messageId: String): Boolean {
+        return try {
+            val chatRef = firestore.collection("chats").document(chatId)
+            val messagesRef = chatRef.collection("messages")
+
+            // ✅ Fetch the message to be deleted
+            val messageDoc = messagesRef.document(messageId).get().await()
+            if (!messageDoc.exists()) {
+                throw Exception("Message not found")
+            }
+
+            val messageTimestamp = messageDoc.getTimestamp("timestamp")
+
+            // ✅ Delete the message
+            messagesRef.document(messageId).delete().await()
+
+            // 🔹 Find the last message after deletion
+            val latestMessages = messagesRef
+                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .await()
+
+            if (latestMessages.isEmpty) {
+                // 🔥 No more messages left, set "No messages"
+                chatRef.update(
+                    mapOf(
+                        "lastMessage" to "No messages",
+                        "lastMessageTimestamp" to FieldValue.serverTimestamp()
+                    )
+                ).await()
+            } else {
+                // ✅ Set the message before the deleted one as the last message
+                val newLastMessage = latestMessages.documents.first()
+                val newText = newLastMessage.getString("text") ?: "No messages"
+                val newTimestamp = newLastMessage.getTimestamp("timestamp") ?: com.google.firebase.Timestamp.now()
+
+                chatRef.update(
+                    mapOf(
+                        "lastMessage" to newText,
+                        "lastMessageTimestamp" to newTimestamp
+                    )
+                ).await()
+            }
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun listenForUnreadMessages(onUpdate: (Int) -> Unit) {
+        val currentUserId = auth.currentUser?.uid ?: return
+
+        firestore.collection("chats")
+            .whereArrayContains("participants.userId", currentUserId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    error.printStackTrace()
+                    return@addSnapshotListener
+                }
+
+                if (snapshot == null || snapshot.isEmpty) {
+                    println("No chats found for user: $currentUserId")
+                    onUpdate(0)
+                    return@addSnapshotListener
+                }
+
+                var unreadChatsCount = 0
+
+                snapshot.documents.forEach { chatDoc ->
+                    val chatId = chatDoc.id
+                    val hasUnreadMessages = chatDoc.getBoolean("hasUnreadMessages") ?: false
+
+                    println("Chat ID: $chatId | hasUnreadMessages: $hasUnreadMessages")
+
+                    if (hasUnreadMessages) {
+                        unreadChatsCount++
+                    }
+                }
+
+                println("Total Unread Chats: $unreadChatsCount")
+                onUpdate(unreadChatsCount)
+            }
+    }
+
+    override suspend fun fetchUnreadChatsCount(userId: String, onUpdate: (Int) -> Unit) {
+        firestore.collection("chats")
+            .whereArrayContains("unreadBy", userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    error.printStackTrace()
+                    return@addSnapshotListener
+                }
+
+                val unreadCount = snapshot?.documents?.size ?: 0
+                onUpdate(unreadCount) // ✅ Update the UI with the unread chat count
+            }
+    }
+
 }

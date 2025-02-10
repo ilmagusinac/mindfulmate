@@ -1,6 +1,5 @@
 package com.example.mindfulmate.presentation.ui.screen.community.component.community_home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil3.compose.AsyncImage
 import com.example.mindfulmate.R
 import com.example.mindfulmate.presentation.theme.Blue
 import com.example.mindfulmate.presentation.theme.DuskyWhite
@@ -35,7 +35,7 @@ import com.example.mindfulmate.presentation.ui.component.MindfulMateButton
 fun CommunitySection(
     title: String,
     membersCount: String,
-    imageRes: Int,
+    backgroundImage: String,
     communityId: String,
     onViewCommunityClick: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -45,9 +45,9 @@ fun CommunitySection(
             .fillMaxWidth()
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)))
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = null,
+        AsyncImage(
+            model = backgroundImage,
+            contentDescription = "community image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
@@ -105,7 +105,7 @@ private fun CommunitySectionPreview() {
         CommunitySection(
             title = "Stress Relief",
             membersCount = "12345",
-            imageRes = R.drawable.ic_launcher_background,
+            backgroundImage = "R.drawable.ic_launcher_background",
             onViewCommunityClick = {},
             communityId = ""
         )

@@ -12,26 +12,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mindfulmate.R
-import com.example.mindfulmate.presentation.theme.DuskyGrey
 import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 import com.example.mindfulmate.presentation.ui.component.MindfulMateFloatingActionButton
 import com.example.mindfulmate.presentation.ui.component.MindfulMatePartialBottomSheet
-import com.example.mindfulmate.presentation.ui.component.MindfulMateSearchField
-import com.example.mindfulmate.presentation.ui.component.util.SearchItem
 import com.example.mindfulmate.presentation.ui.screen.community.util.CommunitySectionParams
-import com.example.mindfulmate.presentation.ui.screen.community.util.TopCommunityProfile
-import com.example.mindfulmate.presentation.ui.screen.home.util.Community
 import com.example.mindfulmate.presentation.ui.screen.home.component.CommunityRow
 import com.example.mindfulmate.presentation.ui.screen.home.component.HeaderWithComponents
 import com.example.mindfulmate.presentation.util.DevicesPreview
@@ -52,12 +43,11 @@ fun HomeScreen(
 ) {
     val messageList by viewModel.messages.collectAsStateWithLifecycle()
     val username by viewModel.username.collectAsStateWithLifecycle()
+    val profileImage by viewModel.profileImage.collectAsStateWithLifecycle()
     val showBottomSheet by navGraphViewModel.showBottomSheet.collectAsStateWithLifecycle()
     val triggeredMessage by navGraphViewModel.triggeredMessage.collectAsStateWithLifecycle()
     val topCommunities by communityViewModel.topCommunitiesRow.collectAsStateWithLifecycle()
     val userCommunities by communityViewModel.userCommunitiesRow.collectAsStateWithLifecycle()
-    val searchCommunities by communityViewModel.searchCommunities.collectAsStateWithLifecycle()
-    var textState by remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(triggeredMessage) {
         triggeredMessage?.let {
@@ -68,6 +58,7 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadUser()
+        viewModel.loadUserProfileImage()
         communityViewModel.fetchTopCommunities(onCommunityClick)
         communityViewModel.getUserCommunities(onCommunityClick)
         communityViewModel.fetchCommunitiesSearch()
@@ -76,6 +67,7 @@ fun HomeScreen(
     HomeScreen(
         messageList = messageList,
         username = username ?: "user",
+        profileImage = profileImage ?: "",
         topCommunities = topCommunities,
         myCommunities = userCommunities,
         onMessageSend = { message -> viewModel.sendMessage(message) },
@@ -89,10 +81,6 @@ fun HomeScreen(
         },
         showBottomSheet = showBottomSheet,
         onDismissBottomSheet = { navGraphViewModel.dismissBottomSheet() },
-        communities = textState,
-        onSearchCommunitiesChange = { textState = it},
-        onSearchItemClick = {},
-        allSearchItems = searchCommunities,
         modifier = modifier
     )
 }
@@ -101,13 +89,10 @@ fun HomeScreen(
 private fun HomeScreen(
     messageList: List<MessageModel>,
     username: String,
+    profileImage: String,
     topCommunities: List<CommunitySectionParams>,
     myCommunities: List<CommunitySectionParams>,
-    communities: TextFieldValue,
-    onSearchCommunitiesChange: (TextFieldValue) -> Unit,
-    allSearchItems: List<SearchItem>,
     onMessageSend: (String) -> Unit,
-    onSearchItemClick: (SearchItem) -> Unit,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
     onBottomSheetClick: () -> Unit,
@@ -123,17 +108,12 @@ private fun HomeScreen(
         ) {
             HeaderWithComponents(
                 username = username,
-                communities = communities,
-                allSearchItems = allSearchItems,
-                onSearchCommunitiesChange = onSearchCommunitiesChange,
+                profileImage = profileImage,
                 onMenuClick = onMenuClick,
-                onProfileClick = onProfileClick,
-                onSearchItemClick = onSearchItemClick
-
+                onProfileClick = onProfileClick
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xmedium)))
             Column(
-                //horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_default))
             ) {
@@ -175,6 +155,7 @@ private fun HomeScreenPreview() {
         HomeScreen(
             messageList = listOf(),
             username = "username",
+            profileImage = "",
             onMessageSend = {},
             onMenuClick = {},
             onProfileClick = {},
@@ -182,11 +163,7 @@ private fun HomeScreenPreview() {
             showBottomSheet = true,
             onDismissBottomSheet = {},
             topCommunities = emptyList(),
-            myCommunities = emptyList(),
-            allSearchItems = emptyList(),
-            onSearchItemClick = {},
-            onSearchCommunitiesChange = {},
-            communities = TextFieldValue()
+            myCommunities = emptyList()
         )
     }
 }

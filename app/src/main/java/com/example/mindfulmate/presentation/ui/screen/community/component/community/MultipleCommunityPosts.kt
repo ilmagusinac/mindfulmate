@@ -48,8 +48,12 @@ fun MultipleCommunityPosts(
                     questionDescription = post.body,
                     likeCount = post.likesCount,
                     commentCount = post.commentsCount,
-                    placeholderRes = post.profilePictureUrl,
-                    onCommentsClick = post.onCommentsClick
+                    isOwner = post.isOwner,
+                    userProfileImageUrl = post.profilePictureUrl,
+                    onCommentsClick = post.onCommentsClick,
+                    onEditClick = post.onEditClick,
+                    onDeleteClick = post.onDeleteClick,
+                    onUserClick = post.onUserClick
                 )
             }
         }
@@ -69,8 +73,12 @@ private fun MultipleCommunityPostsPreview() {
                     body = "Hello everyone can you please tell if you are feeling stressed during exams and how do you cope with stress management",
                     likesCount = "23",
                     commentsCount = "14",
-                    profilePictureUrl = R.drawable.ic_analytics,
-                    onCommentsClick = {}
+                    profilePictureUrl = "R.drawable.ic_analytics",
+                    onCommentsClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    isOwner = true,
+                    onUserClick = {}
                 ),
                 CommunityPostParams(
                     username = "fefefe",
@@ -79,7 +87,10 @@ private fun MultipleCommunityPostsPreview() {
                     body = "Hello everyone can you please tell if you are feeling stressed during exams and how do you cope with stress management",
                     likesCount = "23",
                     commentsCount = "14",
-                    onCommentsClick = {}
+                    onCommentsClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    onUserClick = {}
                 ),
                 CommunityPostParams(
                     username = "username",
@@ -88,8 +99,11 @@ private fun MultipleCommunityPostsPreview() {
                     body = "Hello everyone can you please tell if you are feeling stressed during exams and how do you cope with stress management",
                     likesCount = "23",
                     commentsCount = "14",
-                    profilePictureUrl = R.drawable.ic_launcher_background,
-                    onCommentsClick = {}
+                    profilePictureUrl = "R.drawable.ic_launcher_background",
+                    onCommentsClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    onUserClick = {}
                 ),
             )
         )

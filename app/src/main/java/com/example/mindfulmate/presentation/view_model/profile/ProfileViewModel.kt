@@ -33,7 +33,7 @@ class ProfileViewModel @Inject constructor(
         fetchLastDailyCheckIn()
     }
 
-    private fun loadUser() {
+    fun loadUser() {
         viewModelScope.launch {
             _uiState.update { ProfileUiState.Loading }
             try {
@@ -44,7 +44,8 @@ class ProfileViewModel @Inject constructor(
                     lastName = currentUser.lastName,
                     username = currentUser.username,
                     email = currentUser.email,
-                    number = currentUser.number
+                    number = currentUser.number,
+                    image = currentUser.profileImageUrl
                 )
                 _uiState.update { ProfileUiState.Success(profileParams = profileParams) }
             } catch (e: Exception) {
@@ -53,7 +54,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun fetchLastDailyCheckIn() {
+    fun fetchLastDailyCheckIn() {
         viewModelScope.launch {
             try {
                 val checkIns = getDailyCheckInsUseCase()

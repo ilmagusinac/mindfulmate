@@ -39,6 +39,9 @@ class MainViewModel @Inject constructor(
     private val _isSignUpFlow = MutableStateFlow(false)
     val isSignUpFlow: StateFlow<Boolean> = _isSignUpFlow.asStateFlow()
 
+    private val _toastMessage = Channel<String>(Channel.CONFLATED)
+    val toastMessage = _toastMessage.receiveAsFlow()
+
     fun triggerSignUpFlow() {
         _isSignUpFlow.value = true
     }
@@ -67,6 +70,7 @@ class MainViewModel @Inject constructor(
             try {
                 userRepository.signOut()
                 _uiState.update { SignInUiState.Success(true) }
+                _toastMessage.send("Signed out Successfully!")
                 triggerNavigation(SignInNavigationEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.update { SignInUiState.Failure("Sign-out failed: ${e.localizedMessage}") }

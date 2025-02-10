@@ -14,10 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,11 +30,12 @@ import com.example.mindfulmate.presentation.theme.MindfulMateTheme
 
 @Composable
 fun CommunityPostCommentField(
+    messageText: String,
+    onMessageChange: (String) -> Unit,
     onMessageSend: (String) -> Unit,
+    onCancelEditing: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var message by remember { mutableStateOf("") }
-
     Column(modifier = modifier.fillMaxWidth()) {
         HorizontalDivider(
             thickness = dimensionResource(id = R.dimen.border_light),
@@ -54,8 +51,8 @@ fun CommunityPostCommentField(
                     .background(color = DuskyWhite)
             ) {
                 TextField(
-                    value = message,
-                    onValueChange = { message = it },
+                    value = messageText,
+                    onValueChange = onMessageChange,
                     textStyle = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -67,16 +64,24 @@ fun CommunityPostCommentField(
                         )
                     },
                     trailingIcon = {
-                        IconButton(onClick = {
-                            if (message.isNotEmpty()) {
-                                onMessageSend(message)
-                                message = ""
+                        Row {
+                            if (messageText.isNotEmpty()) {
+                                IconButton(onClick = onCancelEditing) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_close),
+                                        contentDescription = null
+                                    )
+                                }
                             }
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_send),
-                                contentDescription = stringResource(id = R.string.send_icon_description)
-                            )
+                            IconButton(
+                                onClick = { onMessageSend(messageText) },
+                                enabled = messageText.isNotBlank()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_send),
+                                    contentDescription = stringResource(id = R.string.send_icon_description)
+                                )
+                            }
                         }
                     },
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corners)),
@@ -98,10 +103,17 @@ fun CommunityPostCommentField(
     }
 }
 
+
 @Preview
 @Composable
 private fun CommunityPostCommentFieldPreview() {
     MindfulMateTheme {
-        CommunityPostCommentField(onMessageSend = {})
+        CommunityPostCommentField(
+            onMessageSend = {},
+            messageText = TODO(),
+            onMessageChange = TODO(),
+            onCancelEditing = TODO(),
+            modifier = TODO()
+        )
     }
 }

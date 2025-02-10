@@ -162,4 +162,10 @@
     <string name="no_conversations_yet">No conversations yet made!</string>
     <string name="no_comments">No comments for this community yet!</string>
     <string name="no_daily_check_in">You did not input your daily check in! Do so by clicking on the button in Profile Page or just wait for the notification to show up!</string>
+    <string name="emergency_contact">Emergency Contact</string>
+    <string name="global_emergency_contacts">Global Emergency Contacts</string>
+    <string name="users_emergency_contacts">Users Emergency Contacts</string>
+    <string name="add_emergency_contact">Add/Edit Emergency Contact</string>
+    <string name="delete_message">Delete Message</string>
+    <string name="edit_message">Edit Message</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.example.mindfulmate.presentation.ui.screen.community
 
-import androidx.annotation.DrawableRes
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,16 +36,30 @@ fun CommunityScreen(
     onBackButtonClick: () -> Unit,
     onNewPostClick: () -> Unit,
     onNavigateToPost: (String, String) -> Unit,
+    onNavigateToEdit: (String, String) -> Unit,
+    onChatClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState: CommunityUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val posts: List<CommunityPostParams> by viewModel.posts.collectAsStateWithLifecycle()
     val isSaved: Boolean by viewModel.isCommunitySaved.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val selectedPostId by viewModel.selectedPostId.collectAsStateWithLifecycle()
+    val isPopupVisible by viewModel.isPopupVisible.collectAsStateWithLifecycle()
+    val selectedUsername by viewModel.selectedUsername.collectAsStateWithLifecycle()
+    val selectedProfileImage by viewModel.selectedProfileImage.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.toastMessage.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     LaunchedEffect(communityId) {
         viewModel.fetchCommunityDetails(
             communityId = communityId,
-            navigateToPost = onNavigateToPost
+            navigateToPost = onNavigateToPost,
+            navigateToEdit = onNavigateToEdit
         )
         viewModel.checkIfCommunityIsSaved(communityId)
     }
@@ -64,6 +79,7 @@ fun CommunityScreen(
                 title = community.communityName,
                 membersCount = community.membersCount.toString(),
                 description = community.description,
+                profileImage = community.profilePicture,
                 communityPosts = posts,
                 onBackButtonClick = onBackButtonClick,
                 onSaveStateChanged = {
@@ -77,6 +93,33 @@ fun CommunityScreen(
 
         CommunityUiState.Init -> {}
     }
+
+    selectedPostId?.let { postId ->
+        DeleteContentPopUp(
+            deleteTitle = "Delete Post",
+            deleteDialog = "Are you sure you want to delete this post?",
+            onDeleteClick = {
+                viewModel.deletePost(communityId, postId)
+            },
+            onCancelClick = { viewModel.hideDeletePopup() }
+        )
+    }
+
+    if(isPopupVisible){
+        SendMessageUserPopUp(
+            imageUrl = selectedProfileImage ?: "",
+            username = selectedUsername ?: "",
+            onSendMessageClick = {
+                viewModel.selectedUserId.value?.let { otherUserId ->
+                    viewModel.startChatWithUser(otherUserId) { chatId ->
+                        onChatClicked(chatId)
+                    }
+                }
+            },
+            onDismissRequest = { viewModel.hideUserPopup() },
+        )
+    }
+
 }
 
 
@@ -85,13 +128,13 @@ private fun CommunityScreen(
     title: String,
     membersCount: String,
     description: String,
+    profileImage: String,
     isSaved: Boolean,
     communityPosts: List<CommunityPostParams>,
     onBackButtonClick: () -> Unit,
     onSaveStateChanged: (Boolean) -> Unit,
     onNewPostClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    @DrawableRes imageRes: Int = R.drawable.ic_splash
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -110,7 +153,7 @@ private fun CommunityScreen(
                 onBackButtonClick = onBackButtonClick,
                 onSaveStateChanged = onSaveStateChanged,
                 isSaved = isSaved,
-                imageRes = imageRes
+                profileImage = profileImage
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xxmedium)))
             MultipleCommunityPosts(communityPosts = communityPosts)
@@ -135,6 +178,7 @@ private fun CommunityScreenPreview() {
             title = "Stress Reliefe",
             membersCount = "12",
             description = "fjrubfvrbhjndkljihugzhcfnbjnklhugzuftcgvhbjnkjigzfgvhbjnkjh oihgvbjnk ghijv fhfhfhhff ",
+            profileImage = "",
             isSaved = true,
             onBackButtonClick = {},
             onSaveStateChanged = {},
@@ -148,7 +192,10 @@ private fun CommunityScreenPreview() {
                     body = "post.questionDescription",
                     likesCount = "post.likeCount",
                     commentsCount = "post.commentCount",
-                    onCommentsClick = {}
+                    onCommentsClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    onUserClick = {}
                 ),
                 CommunityPostParams(
                     postId = "",
@@ -158,7 +205,10 @@ private fun CommunityScreenPreview() {
                     body = "post.questionDescription",
                     likesCount = "post.likeCount",
                     commentsCount = "post.commentCount",
-                    onCommentsClick = {}
+                    onCommentsClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    onUserClick = {}
                 ),
                 CommunityPostParams(
                     username = "post.username",
@@ -167,7 +217,10 @@ private fun CommunityScreenPreview() {
                     body = "post.questionDescription",
                     likesCount = "post.likeCount",
                     commentsCount = "post.commentCount",
-                    onCommentsClick = {}
+                    onCommentsClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    onUserClick = {}
                 )
             )
         )
@@ -182,6 +235,7 @@ private fun NoCommunityScreenPreview() {
             title = "Stress Reliefe",
             membersCount = "12",
             description = "oihgvbjnk ghijv fhfhfhhff ",
+            profileImage = "",
             isSaved = false,
             onBackButtonClick = {},
             onSaveStateChanged = {},
