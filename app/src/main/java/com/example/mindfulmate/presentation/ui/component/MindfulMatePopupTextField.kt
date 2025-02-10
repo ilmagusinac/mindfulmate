@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mindfulmate.R
@@ -45,7 +46,8 @@ fun MindfulMatePopupTextField(
     text: TextFieldValue,
     buttons: List<DialogButtonConfig>,
     onTextValueChange: (TextFieldValue) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    message: String? = null
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,6 +112,15 @@ fun MindfulMatePopupTextField(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent,
                     )
+                )
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_small)))
+            message?.let {
+                Text(
+                    text = it,
+                    color = Blue,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light),
+                    textAlign = TextAlign.Center
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_xdefault)))

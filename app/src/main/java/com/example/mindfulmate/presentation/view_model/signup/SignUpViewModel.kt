@@ -9,6 +9,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.viewModelScope
 import com.example.mindfulmate.R
 import com.example.mindfulmate.domain.repository.user.UserRepository
+import com.example.mindfulmate.presentation.view_model.main.MainViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel() {
+class SignUpViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState.Init)
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
@@ -32,7 +31,22 @@ class SignUpViewModel @Inject constructor(
     private val _navigationEvent: Channel<SignUpNavigationEvent> = Channel(Channel.CONFLATED)
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
-    fun signUp(email: String, password: String, confirmPassword: String) {
+    private var _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    private val _isSignUpEnabled = MutableStateFlow(false)
+    val isSignUpEnabled: StateFlow<Boolean> = _isSignUpEnabled.asStateFlow()
+
+    fun validateInput(email: String, password: String, confirmPassword: String) {
+        _isSignUpEnabled.value =
+            email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
+    }
+
+    fun signUp(
+        email: String,
+        password: String,
+        confirmPassword: String
+    ) {
         viewModelScope.launch {
             if (password != confirmPassword) {
                 _uiState.update { SignUpUiState.Failure("Passwords do not match") }
@@ -42,8 +56,10 @@ class SignUpViewModel @Inject constructor(
                 userRepository.signUp(email, password)
                 _uiState.update { SignUpUiState.Success(true) }
                 triggerNavigation(SignUpNavigationEvent.Navigate)
+                _errorMessage.value = null
             } catch (e: Exception) {
                 _uiState.update { SignUpUiState.Failure("Sign-up failed: ${e.localizedMessage}") }
+                _errorMessage.value = "Sign-up failed: ${e.localizedMessage}"
             }
         }
     }

@@ -22,9 +22,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel() {
+class SignInViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SignInUiState> = MutableStateFlow(SignInUiState.Init)
     val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
@@ -32,14 +30,32 @@ class SignInViewModel @Inject constructor(
     private val _navigationEvent: Channel<SignInNavigationEvent> = Channel(Channel.CONFLATED)
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
-    fun signIn(email: String, password: String) {
+    private var _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    private var _resetPassword: MutableStateFlow<String?> = MutableStateFlow(null)
+    val resetPassword: StateFlow<String?> = _resetPassword.asStateFlow()
+
+    private val _isSignInEnabled = MutableStateFlow(false)
+    val isSignInEnabled: StateFlow<Boolean> = _isSignInEnabled.asStateFlow()
+
+    fun validateInput(email: String, password: String) {
+        _isSignInEnabled.value = email.isNotBlank() && password.isNotBlank()
+    }
+
+    fun signIn(
+        email: String,
+        password: String
+    ) {
         viewModelScope.launch {
             try {
                 userRepository.signIn(email, password)
                 _uiState.update { SignInUiState.Success(true) }
                 triggerNavigation(SignInNavigationEvent.Navigate)
+                _errorMessage.value = null
             } catch (e: Exception) {
                 _uiState.update { SignInUiState.Failure("Sign-in failed: ${e.localizedMessage}") }
+                _errorMessage.value = "Sign-in failed: ${e.localizedMessage}"
             }
         }
     }
@@ -98,8 +114,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun signOut(){
-        viewModelScope.launch{
+    fun signOut() {
+        viewModelScope.launch {
             try {
                 userRepository.signOut()
                 _uiState.update { SignInUiState.Success(true) }
@@ -110,8 +126,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun deleteAccount(){
-        viewModelScope.launch{
+    fun deleteAccount() {
+        viewModelScope.launch {
             try {
                 userRepository.deleteAccount()
                 _uiState.update { SignInUiState.Success(true) }
@@ -122,14 +138,16 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun resetPassword(emailAddress: String){
-        viewModelScope.launch{
+    fun resetPassword(emailAddress: String) {
+        viewModelScope.launch {
             try {
                 userRepository.resetPassword(emailAddress)
+                _resetPassword.value = "Check your email!"
                 _uiState.update { SignInUiState.Success(true) }
                 triggerNavigation(SignInNavigationEvent.Navigate)
             } catch (e: Exception) {
                 _uiState.update { SignInUiState.Failure("Reset password failed: ${e.localizedMessage}") }
+                _resetPassword.value = "Reset password failed: ${e.localizedMessage}"
             }
         }
     }
