@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_default">30dp</dimen>
+    <dimen name="spacing_medium">18dp</dimen>
+    <dimen name="spacing_small">6dp</dimen>
+    <dimen name="spacing_xlarge">108dp</dimen>
+    <dimen name="spacing_xxxlarge">345dp</dimen>
+    <dimen name="spacing_xxxxmlarge">450dp</dimen>
+    <dimen name="spacing_xxxxlarge">519dp</dimen>
+    <dimen name="spacing_xmedium">42dp</dimen>
+    <dimen name="spacing_xxxmedium">69dp</dimen>
+    <dimen name="spacing_xxdefault">15dp</dimen>
+    <dimen name="spacing_xdefault">24dp</dimen>
+    <dimen name="spacing_xxxxmedium">90dp</dimen>
+    <dimen name="spacing_xxmedium">51dp</dimen>
+
+    <!--Padding-->
+    <dimen name="padding_xsmall">12dp</dimen>
+    <dimen name="padding_small">15dp</dimen>
+    <dimen name="padding_medium">27dp</dimen>
+    <dimen name="padding_xlarge">105dp</dimen>
+    <dimen name="padding_xxlarge">189dp</dimen>
+    <dimen name="padding_xxmedium">54dp</dimen>
+    <dimen name="padding_large">114dp</dimen>
+    <dimen name="padding_xxxmedium">69dp</dimen>
+    <dimen name="padding_mlarge">540dp</dimen>
+    <dimen name="padding_default">24dp</dimen>
+    <dimen name="padding_mediumx">42dp</dimen>
+
+    <!--Height & Width-->
+    <dimen name="height_medium">22dp</dimen>
+    <dimen name="height_defaultx">120dp</dimen>
+    <dimen name="height_large">345dp</dimen>
+    <dimen name="height_xlarge">488dp</dimen>
+    <dimen name="height_mlarge">420dp</dimen>
+
+    <dimen name="width_mlarge">351dp</dimen>
+    <dimen name="width_medium">15dp</dimen>
+
+    <!--Icon-->
+    <dimen name="icon_medium">36dp</dimen>
+    <dimen name="icon_xmedium">27dp</dimen>
+    <dimen name="icon_large">66dp</dimen>
+    <dimen name="icon_small">18dp</dimen>
+    <dimen name="icon_xlarge">81dp</dimen>
+    <dimen name="icon_xxlarge">96dp</dimen>
+
+    <!--Round corners-->
+    <dimen name="rounded_corners">27dp</dimen>
+    <dimen name="rounded_corners_small">12dp</dimen>
+    <dimen name="rounded_corners_large">45dp</dimen>
+
+    <!--Misc-->
+    <dimen name="border_thin">2dp</dimen>
+    <dimen name="border_light">0.75dp</dimen>
+    <dimen name="elevation_medium">6dp</dimen>
+    <dimen name="offset_default">24dp</dimen>
+    <dimen name="blur_medium">75dp</dimen>
+    <dimen name="radius_small">5dp</dimen>
+    <dimen name="axis_step_size_large">150dp</dimen>
+    <dimen name="box_height_small">3dp</dimen>
+</resources>
